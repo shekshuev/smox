@@ -1,15 +1,17 @@
 from flask import Flask, jsonify
 #from flask_cors import CORS
 from flask_restful import Api
-from api import AccessProfile
-from models import AccessProfileModel
-from database import dbhandle
+from api import *
+from models import *
+from database import dbhandle 
 
 DEBUG = True
+API_VERSION = 1.0
 
 app = Flask(__name__)
 api = Api(app)
-api.add_resource(AccessProfile, "/api/access_profile")
+api.add_resource(AccessProfile, f"/api/v{API_VERSION}/access_profiles")
+api.add_resource(Log, f"/api/v{API_VERSION}/logs")
 #CORS(app)
 
 @app.route("/ping", methods=["GET"])
@@ -19,5 +21,6 @@ def ping_pong():
 if __name__ == "__main__":
     dbhandle.connect()
     AccessProfileModel.create_table()
+    LogModel.create_table()
     app.run()
 
