@@ -77,3 +77,19 @@ class Log(Resource):
             else:
                 return error({"Message": f"Wrong id = {id}"})
         
+
+
+class Source(Resource):
+    def get(self):
+        if not "id" in request.args:
+            return success({ "sources": list(SourceModel.select().dicts() ) })
+        id = request.args.get("id", 0, type=int)
+        if id <= 0:
+            return error({ "message": f"Wrong id = {request.args.get('id')}" })
+        else:
+            query = SourceModel.select().where(SourceModel.id == id)
+            if query.exists():
+                return success({ "source": model_to_dict(query.get()) })
+            else:
+                return error({"Message": f"Wrong id = {id}"})
+        

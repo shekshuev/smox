@@ -1,4 +1,4 @@
-from peewee import DateTimeField, Model, PrimaryKeyField, CharField, SmallIntegerField, TextField
+from peewee import DateTimeField, IntegerField, Model, PrimaryKeyField, CharField, SmallIntegerField, TextField
 from database import dbhandle
 
 class BaseModel(Model):
@@ -23,5 +23,18 @@ class LogModel(BaseModel):
 
     class Meta:
         db_table = "logs"
+
+
+
+class SourceModel(BaseModel):
+    id = PrimaryKeyField(null=False)
+    source_id = IntegerField(null=False)
+    name = CharField(max_length=150, null=False)
+    domain = CharField(max_length=50, null=False)
+    description = TextField(null=False)
+    photo = TextField(null=False)
+
+    class Meta:
+        db_table = "sources"
 
 
