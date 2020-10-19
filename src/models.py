@@ -1,4 +1,4 @@
-from peewee import DateTimeField, IntegerField, Model, PrimaryKeyField, CharField, SmallIntegerField, TextField
+from peewee import BooleanField, DateTimeField, ForeignKeyField, IntegerField, Model, PrimaryKeyField, CharField, SmallIntegerField, TextField
 from database import dbhandle
 
 class BaseModel(Model):
@@ -9,7 +9,7 @@ class AccessProfileModel(BaseModel):
     id = PrimaryKeyField(null=False)
     name = CharField(max_length=100, null=False)
     access_token = CharField(max_length=100, null=False)
-
+    
     class Meta:
         db_table = "access_profiles"
 
@@ -18,7 +18,7 @@ class AccessProfileModel(BaseModel):
 class LogModel(BaseModel):
     id = PrimaryKeyField(null=False)
     message = TextField(null=False)
-    date_time = DateTimeField()
+    datetime = DateTimeField()
     type = SmallIntegerField(null=False, default=0)
 
     class Meta:
@@ -36,5 +36,29 @@ class SourceModel(BaseModel):
 
     class Meta:
         db_table = "sources"
+
+
+
+class TaskSourceModel(BaseModel):
+    id = PrimaryKeyField(null=False)
+    source_id = ForeignKeyField(SourceModel, to_field="id", backref="sources")
+
+    class Meta:
+        db_table = "task_sources"
+
+
+
+class TaskModel(BaseModel):
+    id = PrimaryKeyField(null=False)
+    is_finished = BooleanField(null=False, default=False)
+    begin_datetime = DateTimeField(null=False)
+    end_datetime = DateTimeField(null=True)
+    requests_count = IntegerField(null=False, default=0)
+    access_profile = ForeignKeyField(AccessProfileModel, backref="tasks")
+    is_error = BooleanField(null=False, default=False)
+    error = TextField(null=False, default="")
+
+    class Meta:
+        db_table = "tasks"
 
 
