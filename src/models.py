@@ -39,15 +39,6 @@ class SourceModel(BaseModel):
 
 
 
-class TaskSourceModel(BaseModel):
-    id = PrimaryKeyField(null=False)
-    source_id = ForeignKeyField(SourceModel, to_field="id", backref="sources")
-
-    class Meta:
-        db_table = "task_sources"
-
-
-
 class TaskModel(BaseModel):
     id = PrimaryKeyField(null=False)
     is_finished = BooleanField(null=False, default=False)
@@ -60,5 +51,19 @@ class TaskModel(BaseModel):
 
     class Meta:
         db_table = "tasks"
+
+
+
+class TaskSourceModel(BaseModel):
+    id = PrimaryKeyField(null=False)
+    source = ForeignKeyField(SourceModel, backref="task_sources")
+    task = ForeignKeyField(TaskModel, backref="task_sources")
+    total_objects_downloaded = IntegerField(null=False, default=0)
+    offset = IntegerField(null=False, default=0)
+    count = IntegerField(null=False, default=0)
+    begin_count = IntegerField(null=False, default=0)
+
+    class Meta:
+        db_table = "task_sources"
 
 

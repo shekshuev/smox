@@ -15,6 +15,7 @@ api.add_resource(AccessProfile, f"/api/v{API_VERSION}/access_profiles")
 api.add_resource(Log, f"/api/v{API_VERSION}/logs")
 api.add_resource(Source, f"/api/v{API_VERSION}/sources")
 api.add_resource(Task, f"/api/v{API_VERSION}/tasks")
+api.add_resource(TaskSource, f"/api/v{API_VERSION}/task_sources")
 #CORS(app)
 
 
@@ -29,5 +30,6 @@ if __name__ == "__main__":
     LogModel.create_table()
     SourceModel.create_table()
     TaskModel.create_table()
+    TaskSourceModel.create_table()
     app.run()
 

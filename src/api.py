@@ -22,7 +22,7 @@ class AccessProfile(Resource):
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })
         else:
-            query = AccessProfileModel.select().where(AccessProfileModel.id == id)
+            query = (AccessProfileModel.select().where(AccessProfileModel.id == id))
             if query.exists():
                 model = query.get()
                 profile = model_to_dict(model)
@@ -148,7 +148,10 @@ class Task(Resource):
         else:
             query = TaskModel.select().where(TaskModel.id == id)
             if query.exists():
-                return success({ "task": model_to_dict(query.get()) })
+                model = query.get()
+                task = model_to_dict(model)
+                task["task_sources"] = [ model_to_dict(task_source) for task_source in model.task_sources ]
+                return success({ "task": task })
             else:
                 return error({"Message": f"Wrong id = {id}"})
 
@@ -156,12 +159,24 @@ class Task(Resource):
         access_profile_id = request.args.get("access_profile_id")
         if not access_profile_id:
             return error({"message": "Access profile id cannot be null or empty!"})
+        source_ids = set(request.args.getlist("source_ids", type=int))
+        if len(source_ids) == 0:
+            return error({"message": "At least one source id required!"})
         profile = AccessProfileModel.select().where(AccessProfileModel.id == access_profile_id)
-        if profile.exists():
-            task = TaskModel.create(access_profile=profile.first(), begin_datetime=datetime.datetime.now(), end_datetime=None)
-            return success({ "task": model_to_dict(task) })
-        else:
+        if not profile.exists():
             return error({"Message": f"Wrong access profile id = {access_profile_id}"})
+        sources = SourceModel.select().where(SourceModel.id << source_ids)
+        if not sources:
+            return error({"Message": f"Wrong sources ids = {source_ids}"})
+        elif len(sources) < len(source_ids):
+            find_ids = set([source.id for source in sources])
+            return error({"Message": f"Wrong sources ids = {source_ids-find_ids}"})
+        else:
+            task = TaskModel.create(access_profile=profile.first(), begin_datetime=datetime.datetime.now(), end_datetime=None)
+            for source in sources:
+                task_source = TaskSourceModel.create(source=source, task=task)
+            
+            return success({ "task": model_to_dict(task) })
 
     def put(self):
         pass
@@ -175,3 +190,29 @@ class Task(Resource):
             return success({"id": id})
         else: 
             return error({ "message": f"Wrong id = {request.args.get('id')}" })
+
+
+
+class TaskSource(Resource):
+    def get(self):
+        if not "id" in request.args:
+            return success({ "task_sources": list(TaskSourceModel.select().dicts() ) })
+        id = request.args.get("id", 0, type=int)
+        if id <= 0:
+            return error({ "message": f"Wrong id = {request.args.get('id')}" })
+        else:
+            query = TaskSourceModel.select().where(TaskSourceModel.id == id)
+            if query.exists():
+                return success({ "task_source": model_to_dict(query.get()) })
+            else:
+                return error({"Message": f"Wrong id = {id}"})
+
+    def post(self):
+        pass  
+            
+
+    def put(self):
+        pass
+
+    def delete(self):
+        pass
