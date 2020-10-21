@@ -1,10 +1,11 @@
 import axios from "axios";
+import API_URL from "./base.js"
 
 export async function getProfiles ()  
 {
-    let response = await axios.get("/api/access_profiles");
-    if (response.status == 200)
-        return response.data;
+    let response = await axios.get(`${API_URL}access_profiles`);
+    if (response.status == 200 && response.data["success"])
+        return response.data["response"]["access_profiles"];
     else return null;
 }
 

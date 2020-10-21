@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-#from flask_cors import CORS
+from flask_cors import CORS
 from flask_restful import Api
 from api import *
 from models import *
@@ -16,7 +16,7 @@ api.add_resource(Log, f"/api/v{API_VERSION}/logs")
 api.add_resource(Source, f"/api/v{API_VERSION}/sources")
 api.add_resource(Task, f"/api/v{API_VERSION}/tasks")
 api.add_resource(TaskSource, f"/api/v{API_VERSION}/task_sources")
-#CORS(app)
+CORS(app)
 
 
 @app.route("/ping", methods=["GET"])
