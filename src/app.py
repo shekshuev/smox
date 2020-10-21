@@ -11,11 +11,11 @@ API_VERSION = 1.0
 
 app = Flask(__name__)
 api = Api(app)
-api.add_resource(AccessProfile, f"/api/v{API_VERSION}/access_profiles")
-api.add_resource(Log, f"/api/v{API_VERSION}/logs")
-api.add_resource(Source, f"/api/v{API_VERSION}/sources")
-api.add_resource(Task, f"/api/v{API_VERSION}/tasks")
-api.add_resource(TaskSource, f"/api/v{API_VERSION}/task_sources")
+api.add_resource(AccessProfile, f"/api/v{API_VERSION}/access_profile")
+api.add_resource(Log, f"/api/v{API_VERSION}/log")
+api.add_resource(Source, f"/api/v{API_VERSION}/source")
+api.add_resource(Task, f"/api/v{API_VERSION}/task")
+api.add_resource(TaskSource, f"/api/v{API_VERSION}/task_source")
 CORS(app)
 
 

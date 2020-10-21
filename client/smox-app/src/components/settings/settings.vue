@@ -8,7 +8,6 @@
                             <th>Номер</th>
                             <th>Название</th>
                             <th>Токен</th>
-                            <th>Текущий</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -16,8 +15,7 @@
                         <tr v-for="(profile, index) in accessProfiles" v-bind:key="index">
                             <td>{{ index + 1 }}</td>
                             <td>{{ profile.name }}</td>
-                            <td>{{ profile.accessToken }}</td>
-                            <td>{{ profile.current }}</td>
+                            <td>{{ profile.access_token }}</td>
                             <td>
                                 <v-btn icon>
                                     <v-icon v-on:click="deleteAccessProfile(profile)">mdi-delete</v-icon>

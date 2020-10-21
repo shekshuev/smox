@@ -23,7 +23,7 @@ export default Vue.component("settings",
     {
         async addAccessProfile()
         {
-            let result = await addProfile({ id: 0, name: this.name, accessToken: this.accessToken, current: false });
+            let result = await addProfile({ name: this.name, accessToken: this.accessToken });
             if (result != null)
                 this.$store.dispatch(ADD_ACCESS_PROFILE, result);
         },
