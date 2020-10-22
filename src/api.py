@@ -144,7 +144,12 @@ class Source(Resource):
 class Task(Resource):
     def get(self):
         if not "id" in request.args:
-            return success({ "tasks": list(TaskModel.select().dicts() ) })
+           # task_models = 
+            #tasks = [model_to_dict(task_model) for task_model in TaskModel.select().iterator()]
+            for i in TaskModel.select().iterator():
+                model = model_to_dict(i)
+                print(i)
+            return success({ "tasks": [] })
         id = request.args.get("id", 0, type=int)
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })

@@ -1,10 +1,14 @@
 import axios from "axios";
+import API_URL from "./base.js"
+
+const url = `${API_URL}task`;
 
 export async function getTasks ()  
 {
-    let response = await axios.get("/api/task");
+    let response = await axios.get(url);
+    console.log(response.data.response.tasks)
     if (response.status == 200)
-        return response.data;
+        return response.data.response.tasks;
     else return null;
 }
 

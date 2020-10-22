@@ -42,13 +42,13 @@ export default Vue.component("tasks",
                     text: "Запросов к API",
                     align: "start",
                     sortable: "false",
-                    value: "requestsCount"
+                    value: "requests_count"
                 },
                 {
                     text: "Ошибка",
                     align: "start",
                     sortable: "false",
-                    value: "isError"
+                    value: "is_error"
                 },
                 {
                     text: "Действия",

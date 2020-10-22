@@ -4,13 +4,13 @@
             <v-col>
                 <v-data-table v-bind:headers="headers" v-bind:items="tasks" show-expand>
                     <template v-slot:item.isFinished="{ item }">
-                        {{ !item.isFinished }}
+                        {{ !item.is_finished }}
                     </template>
                     <template v-slot:item.beginDate="{ item }">
-                        {{ new Date(item.beginDate).toLocaleDateString() + " " + new Date(item.beginDate).toLocaleTimeString() }}
+                        {{ new Date(item.begin_datetime).toLocaleDateString() + " " + new Date(item.begin_datetime).toLocaleTimeString() }}
                     </template>
                     <template v-slot:item.endDate="{ item }">
-                        {{  item.endDate == null ? "не окончено" : new Date(item.endDate).toLocaleDateString() + " " + new Date(item.endDate).toLocaleTimeString() }}
+                        {{  item.end_datetime == null ? "не окончено" : new Date(item.end_datetime).toLocaleDateString() + " " + new Date(item.endDate).toLocaleTimeString() }}
                     </template>
                     <template v-slot:item.action="{ item }">
                         <v-btn icon><v-icon v-on:click="stopTask(item)">mdi-stop</v-icon></v-btn>
@@ -19,9 +19,9 @@
                     <template v-slot:expanded-item="{ headers, item }">
                         <td :colspan="headers.length">
                             <v-container>
-                                <v-row v-for="taskSource in item.taskSources" :key="taskSource.id">
+                                <v-row v-for="source in item.task_sources" :key="source.id">
                                     <v-col>
-                                        <taskSourceCard :taskSource="taskSource"></taskSourceCard>
+                                        <taskSourceCard :taskSource="source"></taskSourceCard>
                                     </v-col>
                                 </v-row>
                             </v-container>
