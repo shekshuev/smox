@@ -32,10 +32,10 @@
                                             <v-row v-if="source != null">
                                                 <v-col>
                                                     <sourceCard :source="source">
-                                                        <template v-slot:actions="{source}">
+                                                        <template v-slot:actions="{}">
                                                             <v-spacer></v-spacer>
                                                             <v-btn text v-on:click="cansel">Cansel</v-btn>
-                                                            <v-btn text v-on:click="addSource(source)">Save</v-btn>
+                                                            <v-btn text v-on:click="addSourceToStore">Save</v-btn>
                                                         </template>
                                                     </sourceCard>
                                                 </v-col>

@@ -45,7 +45,8 @@ export default Vue.component("logcomponent",
     watch: {
         logs: function(newList)
         {
-            newList.map(log => log.date = new Date(log.date))
+            if (newList)
+                newList.map(log => log.date = new Date(log.date))
         }
     },
     methods: 
@@ -54,7 +55,7 @@ export default Vue.component("logcomponent",
         {
             this.loading = true;
             this.logs = [];
-            let data = await getLogs(options.itemsPerPage, options.itemsPerPage * (options.page - 1))
+            let data = await getLogs(options.itemsPerPage, options.page)
             this.logs = data.logs;
             this.totalLogs = data.count;
             this.loading = false;

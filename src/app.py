@@ -18,12 +18,6 @@ api.add_resource(Task, f"/api/v{API_VERSION}/task")
 api.add_resource(TaskSource, f"/api/v{API_VERSION}/task_source")
 CORS(app)
 
-
-@app.route("/ping", methods=["GET"])
-def ping_pong():
-    return jsonify("pong")
-
-
 if __name__ == "__main__":
     dbhandle.connect()
     AccessProfileModel.create_table()

@@ -1,3 +1,4 @@
+import re
 from flask_restful import Resource, abort
 from flask import jsonify, request, make_response
 from playhouse.shortcuts import model_to_dict, dict_to_model
@@ -71,7 +72,9 @@ class AccessProfile(Resource):
 class Log(Resource):
     def get(self):
         if not "id" in request.args:
-            return success({ "logs": list(LogModel.select().dicts() ) })
+            page = request.args.get("page", 1, type=int)
+            count = request.args.get("count", 10, type=int)
+            return success({ "logs": [model_to_dict(log) for log in LogModel.select().paginate(page, count)] })
         id = request.args.get("id", 0, type=int)
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })

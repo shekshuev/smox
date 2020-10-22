@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { mapState } from "vuex";
-import { searchSource, addSource, deleteSource } from "src/api/source";
+import { addSource, deleteSource } from "src/api/source";
 import { ADD_SOURCE, DELETE_SOURCE } from "src/store/modules/source/mutation_types";
 import sourceCard from "./sourcecard.vue";
 
@@ -48,7 +48,7 @@ export default Vue.component("sources",
             this.delay = setTimeout(async () => 
             {
                 this.loading = true;
-                this.source = await searchSource(newRequest);
+                this.source = await addSource(newRequest);
                 this.loading = false;
             }, 2000);
         }
@@ -66,15 +66,10 @@ export default Vue.component("sources",
             if (await deleteSource(source))
                 this.$store.dispatch(DELETE_SOURCE, source);
         },
-        async addSource(source)
+        addSourceToStore()
         {
-            let result = await addSource(source);
-            if (result != null)
-            {
-                this.$store.dispatch(ADD_SOURCE, result);
-                this.source = null;
-                this.request = "";
-            }
+            this.$store.dispatch(ADD_SOURCE, this.source);
+            this.dialog = false;
         },
         cansel()
         {
