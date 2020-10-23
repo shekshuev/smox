@@ -18,7 +18,8 @@ def error(response="", status=400):
 class AccessProfile(Resource):
     def get(self):
         if not "id" in request.args:
-            return success({ "access_profiles": list(AccessProfileModel.select().dicts() ) })
+            profiles = [model_to_dict(profile, backrefs=True) for profile in AccessProfileModel.select().iterator()]
+            return success({ "access_profiles": profiles })
         id = request.args.get("id", 0, type=int)
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })
@@ -26,8 +27,7 @@ class AccessProfile(Resource):
             query = (AccessProfileModel.select().where(AccessProfileModel.id == id))
             if query.exists():
                 model = query.get()
-                profile = model_to_dict(model)
-                #profile["tasks"] = [ model_to_dict(task) for task in model.tasks ]
+                profile = model_to_dict(model, backrefs=True, max_depth=1)
                 return success({ "access_profile": profile })
             else:
                 return error({"Message": f"Wrong id = {id}"})
@@ -98,7 +98,8 @@ class Source(Resource):
 
     def get(self):
         if not "id" in request.args:
-            return success({ "sources": list(SourceModel.select().dicts() ) })
+            sources = [model_to_dict(source, backrefs=True) for source in SourceModel.select().iterator()]
+            return success({ "sources": sources })
         id = request.args.get("id", 0, type=int)
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })
@@ -144,21 +145,18 @@ class Source(Resource):
 class Task(Resource):
     def get(self):
         if not "id" in request.args:
-           # task_models = 
-            #tasks = [model_to_dict(task_model) for task_model in TaskModel.select().iterator()]
-            for i in TaskModel.select().iterator():
-                model = model_to_dict(i)
-                print(i)
-            return success({ "tasks": [] })
+            tasks = [model_to_dict(task_model, backrefs=True) for task_model in TaskModel.select().iterator()]
+            return success({ "tasks": tasks })
         id = request.args.get("id", 0, type=int)
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })
         else:
+            print(id)
             query = TaskModel.select().where(TaskModel.id == id)
+            print(query.exists())
             if query.exists():
                 model = query.get()
-                task = model_to_dict(model)
-                task["task_sources"] = [ model_to_dict(task_source) for task_source in model.task_sources ]
+                task = model_to_dict(model, backrefs=True)
                 return success({ "task": task })
             else:
                 return error({"Message": f"Wrong id = {id}"})
@@ -204,7 +202,8 @@ class Task(Resource):
 class TaskSource(Resource):
     def get(self):
         if not "id" in request.args:
-            return success({ "task_sources": list(TaskSourceModel.select().dicts() ) })
+            task_sources = [model_to_dict(task_source, backrefs=True) for task_source in TaskSourceModel.select().iterator()]
+            return success({ "task_sources": task_sources })
         id = request.args.get("id", 0, type=int)
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })
