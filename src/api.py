@@ -141,7 +141,6 @@ class Source(Resource):
 
     
 
-
 class Task(Resource):
     def get(self):
         if not "id" in request.args:
@@ -165,7 +164,7 @@ class Task(Resource):
         access_profile_id = request.args.get("access_profile_id")
         if not access_profile_id:
             return error({"message": "Access profile id cannot be null or empty!"})
-        source_ids = set(request.args.getlist("source_ids", type=int))
+        source_ids = set(request.args.get("source_ids").split(","))
         if len(source_ids) == 0:
             return error({"message": "At least one source id required!"})
         profile = AccessProfileModel.select().where(AccessProfileModel.id == access_profile_id)
@@ -192,6 +191,8 @@ class Task(Resource):
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })
         res = TaskModel.delete_by_id(id)
+        # Cascade doesn't work
+        res = TaskSourceModel.delete().where(TaskSourceModel.task == id).execute()
         if bool(res):
             return success({"id": id})
         else: 
@@ -217,6 +218,28 @@ class TaskSource(Resource):
     def post(self):
         pass  
             
+
+    def put(self):
+        pass
+
+    def delete(self):
+        pass
+
+
+
+class Post(Resource):
+    def get(self):
+        if not "id" in request.args:
+            #query = PostModel.select().order_by(PostModel.posted_date)
+            posts = [model_to_dict(post, backrefs=True) for post in PostModel.select().iterator()]
+            return success({ "posts": posts })
+        id = request.args.get("id", 0, type=int)
+        if id <= 0:
+            return error({ "message": f"Wrong id = {request.args.get('id')}" })
+
+
+    def post(self):
+        pass
 
     def put(self):
         pass

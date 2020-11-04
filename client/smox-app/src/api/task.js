@@ -14,21 +14,22 @@ export async function getTasks ()
 
 export async function addTask(accessProfile, sources)
 {
-    let form = new FormData();
-    form.append("id", accessProfile.id);
-    form.append("name", accessProfile.name);
-    form.append("accessToken", accessProfile.accessToken);
-    form.append("current", accessProfile.current);
-    form.append("sources", JSON.stringify(sources));
-    let response = await axios.post("/api/task", form);
+    let response = await axios.post(url, null, 
+    {
+        params: 
+        {
+            access_profile_id: accessProfile.id,
+            source_ids: sources.map(source => source.id).join(",")
+        }
+    });
     if (response.status == 200)
-        return response.data;
+        return response.data.response.task;
     else return null;
 }
 
 export async function deleteTask(taskId)
 {
-    let response = await axios.delete("/api/task", { params: { id: taskId } });
+    let response = await axios.delete(url, { params: { id: taskId } });
     if (response.status == 200)
         return true;
     else return false;

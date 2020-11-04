@@ -25,5 +25,8 @@ if __name__ == "__main__":
     SourceModel.create_table()
     TaskModel.create_table()
     TaskSourceModel.create_table()
+    PostAttachmentModel.create_table()
+    PostTimestampModel.create_table()
+    PostModel.create_table()
     app.run()
 
