@@ -229,9 +229,10 @@ class Post(Resource):
             count = request.args.get("count", 10, type=int)
             start_date = datetime.datetime.fromtimestamp(request.args.get("start_date", 0, type=float))
             end_date = datetime.datetime.fromtimestamp(request.args.get("end_date", 2147483647, type=float))
+            query = PostModel.select().where((PostModel.posted_date >= start_date) & (PostModel.posted_date <= end_date))
             return success({ 
-                "posts": [model_to_dict(post, backrefs=True) for post in PostModel.select().where(PostModel.posted_date >= start_date and PostModel.posted_date <= end_date).paginate(page, count)],
-                "count": PostModel.select().count()
+                "posts": [model_to_dict(post, backrefs=True) for post in query.paginate(page, count)],
+                "count": query.count()
             })
         id = request.args.get("id", 0, type=int)
         if id <= 0:

@@ -26,8 +26,7 @@ def execute():
                 continue
             task_source.count = posts_count - task_source.begin_count
             task_source.save()
-            offset = 0
-            count = task_source.count if task_source.count > max else max
+            count = task_source.count if task_source.count < max else max
             if count == 0:
                 task.requests_count += 1
                 task.save()
@@ -37,10 +36,10 @@ def execute():
                     "type": LogType.info
                 })
             downloaded = 0
-            wallposts = vk_api.wall.get(count=count, owner_id=task_source.source.source_id, offset=offset, extended=True, fields="all")
+            wallposts = vk_api.wall.get(count=count, owner_id=task_source.source.source_id, extended=True, fields="all")
             for wallpost in wallposts["items"]:
-                same = PostModel.select().where(PostModel.post_id==wallpost["id"] and PostModel.owner_id==wallpost["owner_id"] and PostModel.from_id==wallpost["from_id"]).get()
-                if not same:    
+                same = PostModel.select().where((PostModel.post_id==wallpost["id"]) & (PostModel.owner_id==wallpost["owner_id"]) & (PostModel.from_id==wallpost["from_id"]))
+                if not same.exists():    
                     post = PostModel.create(**
                     {
                         "post_id": wallpost["id"],
@@ -121,13 +120,6 @@ def execute():
                                 "title": title,
                                 "url": url
                             })
-                    LogModel.create(**{
-                        "message": f"Source: {task_source.source.name}, added new post",
-                        "datetime": datetime.datetime.now(),
-                        "type": LogType.info
-                    })
-                    downloaded += 1
-                else:
                     PostTimestampModel.create(**
                     {
                         "downloaded_date": datetime.datetime.now(),
@@ -135,10 +127,27 @@ def execute():
                         "reposts_count": wallpost["reposts"]["count"] if "reposts" in wallpost else 0,
                         "views_count": wallpost["views"]["count"] if "views" in wallpost else 0,
                         "comments_count": wallpost["comments"]["count"] if "comments" in wallpost else 0,
-                        "post": same
+                        "post": post
                     })
                     LogModel.create(**{
-                        "message": f"Post: {same.id}, timestamps were updated",
+                        "message": f"Source: {task_source.source.name}, added new post",
+                        "datetime": datetime.datetime.now(),
+                        "type": LogType.info
+                    })
+                    downloaded += 1
+                else:
+                    s = same.get()
+                    PostTimestampModel.create(**
+                    {
+                        "downloaded_date": datetime.datetime.now(),
+                        "likes_count": wallpost["likes"]["count"] if "likes" in wallpost else 0,
+                        "reposts_count": wallpost["reposts"]["count"] if "reposts" in wallpost else 0,
+                        "views_count": wallpost["views"]["count"] if "views" in wallpost else 0,
+                        "comments_count": wallpost["comments"]["count"] if "comments" in wallpost else 0,
+                        "post": same.get()
+                    })
+                    LogModel.create(**{
+                        "message": f"Post: {same.get().id}, timestamps were updated",
                         "datetime": datetime.datetime.now(),
                         "type": LogType.info
                     })
