@@ -13,6 +13,6 @@ export async function getLogs(count = 10, page = 1)
         }
     });
     if (response.status == 200)
-        return response.data;
+        return response.data.response;
     else return null;
 }
