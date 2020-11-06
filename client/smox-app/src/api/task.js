@@ -6,7 +6,6 @@ const url = `${API_URL}task`;
 export async function getTasks ()  
 {
     let response = await axios.get(url);
-    console.log(response.data.response.tasks)
     if (response.status == 200)
         return response.data.response.tasks;
     else return null;

@@ -16,6 +16,7 @@ api.add_resource(Log, f"/api/v{API_VERSION}/log")
 api.add_resource(Source, f"/api/v{API_VERSION}/source")
 api.add_resource(Task, f"/api/v{API_VERSION}/task")
 api.add_resource(TaskSource, f"/api/v{API_VERSION}/task_source")
+api.add_resource(Post, f"/api/v{API_VERSION}/post")
 CORS(app)
 
 if __name__ == "__main__":

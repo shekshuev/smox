@@ -1,3 +1,4 @@
+from datetime import date
 import re
 from flask_restful import Resource, abort
 from flask import jsonify, request, make_response
@@ -5,6 +6,7 @@ from playhouse.shortcuts import model_to_dict, dict_to_model
 from models import *
 import vk
 import datetime
+import sys
 
 def make_api_response(success, response, status):
     return make_response(jsonify({ "success": success, "response": response }), status)
@@ -223,9 +225,14 @@ class TaskSource(Resource):
 class Post(Resource):
     def get(self):
         if not "id" in request.args:
-            #query = PostModel.select().order_by(PostModel.posted_date)
-            posts = [model_to_dict(post, backrefs=True) for post in PostModel.select().iterator()]
-            return success({ "posts": posts })
+            page = request.args.get("page", 1, type=int)
+            count = request.args.get("count", 10, type=int)
+            start_date = datetime.datetime.fromtimestamp(request.args.get("start_date", 0, type=float))
+            end_date = datetime.datetime.fromtimestamp(request.args.get("end_date", 2147483647, type=float))
+            return success({ 
+                "posts": [model_to_dict(post, backrefs=True) for post in PostModel.select().where(PostModel.posted_date >= start_date and PostModel.posted_date <= end_date).paginate(page, count)],
+                "count": PostModel.select().count()
+            })
         id = request.args.get("id", 0, type=int)
         if id <= 0:
             return error({ "message": f"Wrong id = {request.args.get('id')}" })

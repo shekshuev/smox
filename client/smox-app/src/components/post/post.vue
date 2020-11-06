@@ -29,7 +29,7 @@
                         </v-radio-group>
                     </template> 
                     <template v-slot:item.postedDate="{ item }">
-                        {{ new Date(item.postedDate).toLocaleDateString() + " " + new Date(item.postedDate).toLocaleTimeString() }}
+                        {{ new Date(item.posted_date).toLocaleDateString() + " " + new Date(item.posted_date).toLocaleTimeString() }}
                     </template>
                     <template v-slot:top>
                         <v-toolbar flat>

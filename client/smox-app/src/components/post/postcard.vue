@@ -16,17 +16,17 @@
                     <v-list-item-title>{{ post.source.name }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-content>
-                    <v-btn target="_blank" text :href="'https://vk.com/wall' + post.ownerId + '_' + post.postId">Ссылка</v-btn>
+                    <v-btn target="_blank" text :href="'https://vk.com/wall' + post.owner_id + '_' + post.post_id">Ссылка</v-btn>
                 </v-list-item-content>
                 <v-row align="center" justify="end">
                     <v-icon class="mr-1">mdi-heart</v-icon>
-                    <span class="subheading mr-2">{{ post.timeStamps[post.timeStamps.length - 1].likesCount }}</span>
+                    <span class="subheading mr-2">{{ post.time_stamps[post.time_stamps.length - 1].likes_count }}</span>
                     <v-icon class="mr-1">mdi-share</v-icon>
-                    <span class="subheading mr-2">{{ post.timeStamps[post.timeStamps.length - 1].repostsCount }}</span>
+                    <span class="subheading mr-2">{{ post.time_stamps[post.time_stamps.length - 1].reposts_count }}</span>
                     <v-icon class="mr-1">mdi-comment</v-icon>
-                    <span class="subheading mr-2">{{ post.timeStamps[post.timeStamps.length - 1].commentsCount }}</span>
+                    <span class="subheading mr-2">{{ post.time_stamps[post.time_stamps.length - 1].comments_count }}</span>
                     <v-icon class="mr-1">mdi-eye</v-icon>
-                    <span class="subheading">{{ post.timeStamps[post.timeStamps.length - 1].viewsCount }}</span>
+                    <span class="subheading">{{ post.time_stamps[post.time_stamps.length - 1].views_count }}</span>
                 </v-row>
             </v-list-item>
         </v-card-actions>

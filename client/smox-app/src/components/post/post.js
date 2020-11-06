@@ -25,25 +25,25 @@ export default Vue.component("posts",
                     text: "PostId",
                     align: "start",
                     sortable: "false",
-                    value: "postId"
+                    value: "post_id"
                 },
                 {
                     text: "OwnerId",
                     align: "start",
                     sortable: "false",
-                    value: "ownerId"
+                    value: "owner_id"
                 },
                 {
                     text: "FromId",
                     align: "start",
                     sortable: "false",
-                    value: "fromId"
+                    value: "from_id"
                 },
                 {
                     text: "Дата публикации",
                     align: "start",
                     sortable: "false",
-                    value: "postedDate"
+                    value: "posted_date"
                 },
                 {
                     text: "Класс",
@@ -69,12 +69,6 @@ export default Vue.component("posts",
             startDate: state => state.post.startDate,
             endDate: state => state.post.endDate
         })
-    },
-    watch: {
-        posts: function(newList)
-        {
-            newList.map(post => post.postedDate = new Date(post.postedDate))
-        }
     },
     mounted: function()
     {
@@ -115,7 +109,7 @@ export default Vue.component("posts",
         {
             this.loading = true;
             this.posts = [];
-            let data = await getPosts(options.itemsPerPage, options.itemsPerPage * (options.page - 1), this.startDate, this.endDate)
+            let data = await getPosts(options.itemsPerPage, options.page, this.startDate, this.endDate)
             this.posts = data.posts;
             this.totalPosts = data.count;
             this.loading = false;

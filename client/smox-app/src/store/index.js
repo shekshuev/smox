@@ -14,7 +14,6 @@ const store = new Vuex.Store(
     mutations: {
         initialiseStore(state) 
         {
-            console.log(typeof(localStorage.getItem('startDate')))
             if(localStorage.getItem('options')) 
             {
 				state.post.options = JSON.parse(localStorage.getItem('options'))

@@ -1,3 +1,3 @@
 from peewee import SqliteDatabase
 
-dbhandle = SqliteDatabase("database.db")
+dbhandle = SqliteDatabase("src/database.db")
