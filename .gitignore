@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 .vscode/*
+
+src/flask/smox
+src/app/static/smox-app
+src/app/templates/smox-app
 # C extensions
 *.so
 *.db
