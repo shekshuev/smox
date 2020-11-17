@@ -4,8 +4,8 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  outputDir: path.resolve(__dirname, "../../src/app/templates/smox-app"),
-  assetsDir: "../../static/smox-app",
+  outputDir: path.resolve(__dirname, "../../src/app/templates/smox-auth"),
+  assetsDir: "../../static/smox-auth",
   configureWebpack: {
     resolve: {
       alias: {
