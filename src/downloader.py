@@ -1,4 +1,4 @@
-from models import *
+from database.social.models import *
 import vk
 import datetime
 

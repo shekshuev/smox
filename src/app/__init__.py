@@ -1,22 +1,22 @@
-import os
 from flask import Flask
 from flask_cors import CORS
-from flask_openid import OpenID
-from flask_login import LoginManager
-from models import *
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from database.social.models import *
 from database import dbhandle 
-from app.api import api
-from app.views import views
-from config import basedir
+from app.api import api as app_api
+from auth.api import api as auth_api
+from app.views import views as app_views
+from auth.views import views as auth_views
 
 app = Flask(__name__)
-app.register_blueprint(api)
-app.register_blueprint(views)
+app.register_blueprint(app_api)
+app.register_blueprint(auth_api)
+app.register_blueprint(app_views)
+app.register_blueprint(auth_views)
+app.config["JWT_SECRET_KEY"] = "Fuck them all!"
+jwt = JWTManager(app)
 CORS(app)
 
-#lm = LoginManager()
-#lm.init_app(app)
-#oid = OpenID(app, os.path.join(basedir, 'tmp'))
 
 dbhandle.connect()
 AccessProfileModel.create_table()

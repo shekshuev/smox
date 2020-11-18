@@ -1,23 +1,14 @@
 from flask import jsonify, request, make_response, Blueprint
 from playhouse.shortcuts import model_to_dict, dict_to_model
-from models import *
+from database.social.models import *
 import vk
 import datetime
+from common.api_extensions import success, error
 
 API_VERSION = 1.0
 VK_API_VERSION = 5.95
 
-api = Blueprint("api", __name__)
-
-def make_api_response(success, response, status):
-    return make_response(jsonify({ "success": success, "response": response }), status)
-
-def success(response="", status=200):
-    return make_api_response(True, response, status)
-
-def error(response="", status=400):
-    return make_api_response(False, response, status)
-
+api = Blueprint("app_api", __name__)
 
 access_profile_route = f"/api/v{API_VERSION}/access_profile"
 log_route = f"/api/v{API_VERSION}/log"
