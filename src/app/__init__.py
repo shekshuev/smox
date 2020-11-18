@@ -1,6 +1,8 @@
+import sqlalchemy
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from flask_sqlalchemy import SQLAlchemy
 from database.social.models import *
 from database import dbhandle 
 from app.api import api as app_api
@@ -17,6 +19,7 @@ app.config["JWT_SECRET_KEY"] = "Fuck them all!"
 jwt = JWTManager(app)
 CORS(app)
 
+usersdb = SQLAlchemy(app)
 
 dbhandle.connect()
 AccessProfileModel.create_table()
