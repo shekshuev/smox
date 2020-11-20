@@ -1,14 +1,15 @@
 from flask import request, Blueprint
-from playhouse.shortcuts import model_to_dict, dict_to_model
-from database.social.models import *
+from database import db
+from database.social.access_profile import AccessProfileModel
+from database.social.log import LogModel
 import vk
 import datetime
 from common.api_extensions import success, error
 
-API_VERSION = 1.0
+API_VERSION = 2.0
 VK_API_VERSION = 5.95
 
-api = Blueprint("app_api", __name__)
+api = Blueprint("app_api2", __name__)
 
 access_profile_route = f"/api/v{API_VERSION}/access_profile"
 log_route = f"/api/v{API_VERSION}/log"
@@ -17,20 +18,20 @@ task_route = f"/api/v{API_VERSION}/task"
 task_source_route = f"/api/v{API_VERSION}/task_source"
 post_route = f"/api/v{API_VERSION}/task_source"
 
+
+
 @api.route(access_profile_route, methods=["GET"])
 def read_access_profile():
     if not "id" in request.args:
-        profiles = [model_to_dict(profile, backrefs=False) for profile in AccessProfileModel.select().iterator()]
+        profiles = [profile.to_dict(rel=True) for profile in AccessProfileModel.query.all()]
         return success({ "access_profiles": profiles })
     id = request.args.get("id", 0, type=int)
     if id <= 0:
         return error({ "message": f"Wrong id = {request.args.get('id')}" })
     else:
-        query = (AccessProfileModel.select().where(AccessProfileModel.id == id))
-        if query.exists():
-            model = query.get()
-            profile = model_to_dict(model, backrefs=True, max_depth=1)
-            return success({ "access_profile": profile })
+        profile = AccessProfileModel.query.get(id)
+        if profile:
+            return success({ "access_profile": profile.to_dict(True) })
         else:
             return error({"Message": f"Wrong id = {id}"})
 
@@ -43,21 +44,33 @@ def create_access_profile():
     if not access_token:
         return error({"message": "Access token cannot be null or empty!"})
     try:
-        profile = AccessProfileModel.create(**{ "name": name, "access_token": access_token })
-        return success({ "access_profile": model_to_dict(profile) })
+        profile = AccessProfileModel(name=name, access_token=access_token)
+        db.session.add(profile)
+        db.session.commit()
+        return success({ "access_profile": profile.to_dict()})
     except Exception as e:
         return error({"message": str(e)})
 
 @api.route(access_profile_route, methods=["PUT"])
 def update_access_profile():
+    id = request.args.get("id")
+    if not id:
+        return error({"message": "Id cannot be null or empty!"})
+    name = request.args.get("name")
+    if not name:
+        return error({"message": "Name cannot be null or empty!"})
+    access_token = request.args.get("access_token")
+    if not access_token:
+        return error({"message": "Access token cannot be null or empty!"})
     try:
-        profile = dict_to_model(AccessProfileModel, request.args.to_dict())
-        if not profile.name:
-            return error({"message": "Name cannot be null or empty!"})
-        if not profile.access_token:
-            return error({"message": "Access token cannot be null or empty!"})
-        result = profile.save()
-        return success({ "access_profile": model_to_dict(profile), "updated": bool(result) })
+        profile = AccessProfileModel.query.get(id)
+        if profile:
+            profile.name = name
+            profile.access_token = access_token
+            db.session.commit()
+            return success({ "access_profile": profile.to_dict(True) })
+        else:
+            return error({"Message": f"Wrong id = {id}"})
     except Exception as e:
         return error({"message": str(e)})
 
@@ -66,11 +79,14 @@ def delete_access_profile():
     id = request.args.get("id", 0, type=int)
     if id <= 0:
         return error({ "message": f"Wrong id = {request.args.get('id')}" })
-    res = AccessProfileModel.delete_by_id(id)
-    if bool(res):
+    profile = AccessProfileModel.query.get(id)
+    if profile:
+        db.session.delete(profile)
+        db.session.commit()
         return success({"id": id})
     else: 
         return error({ "message": f"Wrong id = {request.args.get('id')}" })
+
 
 
 
@@ -79,11 +95,12 @@ def read_log():
     page = request.args.get("page", 1, type=int)
     count = request.args.get("count", 10, type=int)
     return success({ 
-        "logs": [model_to_dict(log) for log in LogModel.select().paginate(page, count)],
-        "count": LogModel.select().count()
+        "logs": [log.to_dict() for log in LogModel.query.offset((page - 1) * count).limit(count)],
+        "count": LogModel.query.count()
     })
 
 
+"""
 
 @api.route(source_route, methods=["GET"])
 def read_source():
@@ -225,3 +242,5 @@ def read_post():
     id = request.args.get("id", 0, type=int)
     if id <= 0:
         return error({ "message": f"Wrong id = {request.args.get('id')}" })
+
+"""
