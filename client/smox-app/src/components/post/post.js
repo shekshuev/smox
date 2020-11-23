@@ -67,7 +67,7 @@ export default Vue.component("posts",
         ...mapState({
             options: state => state.post.options,
             startDate: state => state.post.startDate,
-            endDate: state => state.post.endDate
+            endDate: state => state.post.endDate,
         })
     },
     mounted: function()

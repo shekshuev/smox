@@ -11,13 +11,14 @@ export async function getSources ()
     else return null;
 }
 
-export async function addSource(request)
+export async function addSource(request, accessToken)
 {
     let response = await axios.post(url, null, 
     {
         params: 
         {
-            request: request
+            request: request,
+            access_token: accessToken
         }
     });
     if (response.status == 200)

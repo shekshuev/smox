@@ -22,6 +22,18 @@
                                         <v-container>
                                             <v-row>
                                                 <v-col>
+                                                    <v-select v-model="selectedAccessProfile" :items="accessProfiles" label="Профиль доступа">
+                                                        <template v-slot:selection="{ item, on }">
+                                                            <v-list-item v-on="on">{{ item.name }}</v-list-item>
+                                                        </template>
+                                                        <template v-slot:item="{ item, on }">
+                                                            <v-list-item v-on="on">{{ item.name }}</v-list-item>
+                                                        </template>
+                                                    </v-select>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row v-if="selectedAccessProfile != null">
+                                                <v-col>
                                                     <v-text-field v-model="request" label="Id или домен">
                                                         <template v-slot:append>
                                                             <v-progress-circular v-if="loading" indeterminate size="25"></v-progress-circular>

@@ -15,6 +15,7 @@ export default Vue.component("sources",
             dialog: false,
             request: "",
             source: null,
+            selectedAccessProfile: null,
             headers:
             [
                 {
@@ -48,7 +49,7 @@ export default Vue.component("sources",
             this.delay = setTimeout(async () => 
             {
                 this.loading = true;
-                this.source = await addSource(newRequest);
+                this.source = await addSource(newRequest, this.selectedAccessProfile.access_token);
                 this.loading = false;
             }, 2000);
         }
@@ -56,7 +57,8 @@ export default Vue.component("sources",
     computed: 
     {
         ...mapState({
-            sources: state => state.source.sources
+            sources: state => state.source.sources,
+            accessProfiles: state => state.accessProfile.accessProfiles,
         })
     },
     methods: 

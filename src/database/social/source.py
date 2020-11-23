@@ -14,13 +14,21 @@ class SourceModel(db.Model):
     task_sources = db.relationship(TaskSourceModel, backref="source", lazy=True)
     posts = db.relationship(PostModel, backref="source", lazy=True)
 
-    def to_dict(self):
-        return {}
-        #return SourceSchema().dump(self)
-"""
+    def to_dict(self, rel=False):
+        if rel:
+            return SourceSchema().dump(self)
+        else:
+            return SourceSchemaNoRel().dump(self)
+
 class SourceSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = SourceModel
         include_relationships = True
         load_instance = True
-        """
+
+class SourceSchemaNoRel(SQLAlchemyAutoSchema):
+    class Meta:
+        model = SourceModel
+        include_relationships = True
+        load_instance = False
+        

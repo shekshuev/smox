@@ -1,5 +1,7 @@
 from database import db
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from database.social.post_attachment import PostAttachmentModel
+from database.social.post_timestamp import PostTimestampModel
 
 class PostModel(db.Model):
     __tablename__ = "posts"
@@ -11,5 +13,5 @@ class PostModel(db.Model):
     posted_date = db.Column(db.DateTime, nullable=False)
     text = db.Column(db.Text, nullable=False, default="")
     target = db.Column(db.Integer, nullable=False, default=0)
-    attachments = db.relationship("PostAttachmentModel", backref="post", lazy=True)
-    time_stamps = db.relationship("PostTimestampModel", backref="post", lazy=True)
+    attachments = db.relationship(PostAttachmentModel, backref="post", lazy=True)
+    time_stamps = db.relationship(PostTimestampModel, backref="post", lazy=True)
