@@ -1,7 +1,7 @@
 import Vue from "vue";
 import { mapState } from "vuex";
-import { addTask, deleteTask } from "src/api/task";
-import { ADD_TASK, DELETE_TASK } from "src/store/modules/task/mutation_types";
+import { addTask, deleteTask, stopTask } from "src/api/task";
+import { ADD_TASK, DELETE_TASK, UPDATE_TASK } from "src/store/modules/task/mutation_types";
 import taskSourceCard from "./tasksourcecard.vue";
 
 export default Vue.component("tasks",
@@ -108,10 +108,14 @@ export default Vue.component("tasks",
                 this.$store.dispatch(DELETE_TASK, task);
             }   
         },
-        //stopTask(task)
-        //{
-            
-        //},
+        async stopTask(task)
+        {
+            let result = await stopTask(task.id);
+            if (result != null)
+            {
+                this.$store.dispatch(UPDATE_TASK, result);
+            } 
+        },
         selectAllSources()
         {
             if (this.selectedSources.length == 0)

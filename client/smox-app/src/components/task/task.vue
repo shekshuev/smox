@@ -10,11 +10,11 @@
                         {{ new Date(item.begin_datetime).toLocaleDateString() + " " + new Date(item.begin_datetime).toLocaleTimeString() }}
                     </template>
                     <template v-slot:item.endDate="{ item }">
-                        {{  item.end_datetime == null ? "не окончено" : new Date(item.end_datetime).toLocaleDateString() + " " + new Date(item.endDate).toLocaleTimeString() }}
+                        {{  item.end_datetime == null ? "не окончено" : new Date(item.end_datetime).toLocaleDateString() + " " + new Date(item.end_datetime).toLocaleTimeString() }}
                     </template>
                     <template v-slot:item.action="{ item }">
-                        <v-btn icon><v-icon v-on:click="stopTask(item)">mdi-stop</v-icon></v-btn>
                         <v-btn icon><v-icon v-on:click="showConfirmDialog('Удалить выбранный элемент?', () => deleteTask(item))">mdi-delete</v-icon></v-btn>
+                        <v-btn icon v-if="item.is_finished == false"><v-icon v-on:click="showConfirmDialog('Остановить задание?', () => stopTask(item))">mdi-stop</v-icon></v-btn>
                     </template>
                     <template v-slot:expanded-item="{ headers, item }">
                         <td :colspan="headers.length">
@@ -97,7 +97,7 @@
                 <v-card-title>{{ confirmDialogText }}</v-card-title>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text v-on:click="applyConfirmDialog">Удалить</v-btn>
+                    <v-btn text v-on:click="applyConfirmDialog">Да</v-btn>
                     <v-btn text v-on:click="closeConfirmDialog">Отмена</v-btn>
                 </v-card-actions>
             </v-card>

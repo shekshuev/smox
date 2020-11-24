@@ -12,11 +12,10 @@ class TaskSourceModel(db.Model):
     begin_count = db.Column(db.Integer, nullable=False, default=0)
 
     def to_dict(self):
-        return {}
-        #return TaskSourceSchema().dump(self)
-"""
+        return TaskSourceSchema().dump(self)
+
 class TaskSourceSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = TaskSourceModel
         load_instance = True
-        include_fk = True"""
+        include_fk = True

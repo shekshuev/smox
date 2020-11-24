@@ -33,3 +33,11 @@ export async function deleteTask(taskId)
         return true;
     else return false;
 }
+
+export async function stopTask(taskId)
+{
+    let response = await axios.put(url, null, { params: { id: taskId } });
+    if (response.status == 200)
+        return response.data.response.task;
+    else return null;
+}

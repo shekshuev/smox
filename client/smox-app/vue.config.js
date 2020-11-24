@@ -5,7 +5,7 @@ module.exports = {
     "vuetify"
   ],
   outputDir: path.resolve(__dirname, "../../src/app/templates/smox-app"),
-  assetsDir: "../../static/smox-app",
+  //assetsDir: "../../static/smox-app",
   configureWebpack: {
     resolve: {
       alias: {

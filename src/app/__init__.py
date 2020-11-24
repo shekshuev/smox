@@ -10,6 +10,7 @@ from app.api.access_profile import api as access_profile_api
 from app.api.log import api as log_api
 from app.api.source import api as source_api
 from app.api.post import api as post_api
+from app.api.task import api as task_api
 from auth.api import api as auth_api
 from app.views import views as app_views
 from auth.views import views as auth_views
@@ -20,6 +21,7 @@ app.register_blueprint(access_profile_api)
 app.register_blueprint(log_api)
 app.register_blueprint(source_api)
 app.register_blueprint(post_api)
+app.register_blueprint(task_api)
 app.register_blueprint(auth_api)
 app.register_blueprint(app_views)
 app.register_blueprint(auth_views)

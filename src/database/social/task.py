@@ -12,15 +12,22 @@ class TaskModel(db.Model):
     access_profile_id = db.Column(db.Integer, db.ForeignKey("access_profiles.id"), nullable=False)
     is_error = db.Column(db.Boolean, nullable=False, default=False)
     error = db.Column(db.Text, nullable=False, default="")
-    task_sources = db.relationship("TaskSourceModel", backref="task", lazy=True)
+    task_sources = db.relationship(TaskSourceModel, backref="task", lazy=True)
     
-    def to_dict(self):
-        return {}
-        #return TaskSchema().dump(self)
-"""
+    def to_dict(self, rel=False):
+        if rel:
+            return TaskSchema().dump(self)
+        else:
+            return TaskSchemaNoRel().dump(self)
+
 class TaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = TaskModel
         include_relationships = True
         load_instance = True
-        include_fk = True"""
+
+class TaskSchemaNoRel(SQLAlchemyAutoSchema):
+    class Meta:
+        model = TaskModel
+        include_relationships = False
+        load_instance = True
