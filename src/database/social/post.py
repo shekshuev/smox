@@ -15,3 +15,21 @@ class PostModel(db.Model):
     target = db.Column(db.Integer, nullable=False, default=0)
     attachments = db.relationship(PostAttachmentModel, backref="post", lazy=True)
     time_stamps = db.relationship(PostTimestampModel, backref="post", lazy=True)
+
+    def to_dict(self, rel=False):
+        if rel:
+            return PostSchema().dump(self)
+        else:
+            return PostSchemaNoRel().dump(self)
+
+class PostSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PostModel
+        include_relationships = True
+        load_instance = True
+
+class PostSchemaNoRel(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PostModel
+        include_relationships = True
+        load_instance = False

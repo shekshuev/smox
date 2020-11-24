@@ -11,7 +11,7 @@ src/app/templates/smox-app
 src/app/templates/smox-auth
 
 .DS_Store
-
+.vscode/
 # C extensions
 *.so
 *.db
