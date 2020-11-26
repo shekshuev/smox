@@ -16,6 +16,6 @@ class PostAttachmentModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
     type = db.Column(db.Integer, nullable=False, default=0)
-    title = db.Column(db.Text)
-    text = db.Column(db.Text)
+    title = db.Column(db.Text, nullable=False)
+    text = db.Column(db.Text, nullable=False)
     url = db.Column(db.Text, nullable=False, default="")

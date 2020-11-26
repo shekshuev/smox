@@ -31,4 +31,11 @@ CORS(app)
 
 db.init_app(app)
 migrate = Migrate(app, db)
-    #from database.social.models2 import *
+from database.social.access_profile import AccessProfileModel
+from database.social.log import LogModel
+from database.social.post_attachment import PostAttachmentModel
+from database.social.post_timestamp import PostTimestampModel
+from database.social.post import PostModel
+from database.social.source import SourceModel
+from database.social.task_source import TaskSourceModel
+from database.social.task import TaskModel
