@@ -30,7 +30,7 @@ jwt = JWTManager(app)
 CORS(app)
 
 db.init_app(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 from database.social.access_profile import AccessProfileModel
 from database.social.log import LogModel
 from database.social.post_attachment import PostAttachmentModel
