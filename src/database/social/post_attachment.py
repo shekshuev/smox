@@ -14,7 +14,7 @@ class AttachmentType(IntEnum):
 class PostAttachmentModel(db.Model):
     __tablename__ = "post_attachment"
     id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
     type = db.Column(db.Integer, nullable=False, default=0)
     title = db.Column(db.Text, nullable=False)
     text = db.Column(db.Text, nullable=False)

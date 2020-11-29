@@ -17,6 +17,12 @@ from auth.views import views as auth_views
 
 
 app = Flask(__name__)
+app.config.from_object(Config)
+jwt = JWTManager(app)
+CORS(app)
+db.init_app(app)
+migrate = Migrate(app, db)
+
 app.register_blueprint(access_profile_api)
 app.register_blueprint(log_api)
 app.register_blueprint(source_api)
@@ -25,12 +31,8 @@ app.register_blueprint(task_api)
 app.register_blueprint(auth_api)
 app.register_blueprint(app_views)
 app.register_blueprint(auth_views)
-app.config.from_object(Config)
-jwt = JWTManager(app)
-CORS(app)
 
-db.init_app(app)
-migrate = Migrate(app, db, render_as_batch=True)
+
 from database.social.access_profile import AccessProfileModel
 from database.social.log import LogModel
 from database.social.post_attachment import PostAttachmentModel

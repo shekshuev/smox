@@ -7,7 +7,7 @@ class LogType(IntEnum):
     error = 1
 
 class LogModel(db.Model):
-    __tablename__ = 'logs'
+    __tablename__ = 'log'
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)

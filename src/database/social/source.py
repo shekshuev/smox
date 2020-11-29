@@ -4,7 +4,7 @@ from database.social.post import PostModel
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 class SourceModel(db.Model):
-    __tablename__ = "sources"
+    __tablename__ = "source"
     id = db.Column(db.Integer, primary_key=True)
     source_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(150), nullable=False)
