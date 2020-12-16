@@ -4,15 +4,23 @@
 """
 from faker import Faker
 import random
-from datetime import datetime, timedelta
-from database import db
+from datetime import timedelta
 from database.social.post import PostModel
 from database.social.post_timestamp import PostTimestampModel
 from database.social.post_attachment import PostAttachmentModel
 from database.social.source import SourceModel
 
-def generate_sources():
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+SQLALCHEMY_DATABASE_URI = "mysql://smox:smoxsmox@localhost:3306/smox"
+engine = create_engine(SQLALCHEMY_DATABASE_URI)
+
+session = sessionmaker(autocommit=False, autoflush=False, bind=engine)()
+
+def generate_posts(count):
     fake = Faker()
+    id = 1
     for i in range(1, 11, 1):
         source = SourceModel(
             source_id = -i * 10000, 
@@ -21,14 +29,9 @@ def generate_sources():
             description = fake.paragraph(nb_sentences=3),
             photo = "https://picsum.photos/200"
         )
-        db.session.add(source)
-    db.session.commit()
-
-def generate_posts():
-    fake = Faker()
-    id = 1
-    for source in SourceModel.query.all():
-        for _ in range(1000):
+        session.add(source)
+        session.commit()
+        for _ in range(count):
             Faker.seed(random.randint(0, 100000))
             post = PostModel(
                 post_id = id,
@@ -39,8 +42,8 @@ def generate_posts():
                 text = fake.paragraph(nb_sentences=10),
                 target = 0,
             )
-            db.session.add(post)
-            db.session.commit()
+            session.add(post)
+            session.commit()
             attachments = random.randint(0, 10)
             for _ in range(attachments):
                 Faker.seed(random.randint(0, 100000))
@@ -51,12 +54,12 @@ def generate_posts():
                     text = fake.paragraph(nb_sentences=3),
                     url = "https://picsum.photos/200"
                 )
-                db.session.add(post_attachment)
-            db.session.commit()
+                session.add(post_attachment)
+            session.commit()
             ts = random.randint(100, 10000)
-            for i in range(ts):
+            for j in range(ts):
                 Faker.seed(random.randint(0, 100000))
-                created = post.created_at + timedelta(hours = i)
+                created = post.created_at + timedelta(hours = j)
                 post_timestamp = PostTimestampModel(
                     post_id = post.id, 
                     created_at = created,
@@ -65,9 +68,11 @@ def generate_posts():
                     views_count = 0,
                     comments_count = 0
                 )
-                db.session.add(post_timestamp)
-            db.session.commit()
+                session.add(post_timestamp)
+            session.commit()
             id += 1
+            print(f"post {id}, attachments: {attachments}, timestamps: {ts}")
 
 if __name__ == "__main__":
     print("fuck")
+    generate_posts(1000)
