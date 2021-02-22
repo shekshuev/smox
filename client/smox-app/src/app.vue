@@ -10,7 +10,7 @@
                         <v-list-item-title>Главная</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/sources">
+                <v-list-item link to="/analytics">
                     <v-list-item-action>
                         <v-icon>mdi-database</v-icon>
                     </v-list-item-action>
@@ -32,6 +32,14 @@
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>Настройки</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item link to="/logs">
+                    <v-list-item-action>
+                        <v-icon>mdi-notebook</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>Логи</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>

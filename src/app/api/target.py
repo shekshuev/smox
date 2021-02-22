@@ -1,0 +1,42 @@
+from flask import request, Blueprint
+from database import db
+from database.social.access_profile import AccessProfileModel
+from database.social.target import TargetModel
+from database.social.post import PostModel
+from common.api_extensions import success, error
+from app.api.version import API_VERSION
+from sqlalchemy import and_, or_
+
+api = Blueprint("target_api", __name__)
+
+target_route = f"/api/v{API_VERSION}/target"
+
+@api.route(target_route, methods=["GET"])
+def read_target():
+    if not "id" in request.args:
+        targets = [target.to_dict() for target in TargetModel.query.all()]
+        return success({ "targets": targets })
+    id = request.args.get("id", 0, type=int)
+    if id <= 0:
+        return error({ "message": f"Wrong id = {request.args.get('id')}" })
+    else:
+        target = TargetModel.query.get(id)
+        if target:
+            return success({ "target": target.to_dict() })
+        else:
+            return error({"Message": f"Wrong id = {id}"})
+
+@api.route(target_route, methods=["POST"])
+def create_target():
+    keywords_str = request.args.get("keywords")
+    if not keywords_str:
+        return error({"message": "Keywords cannot be null or empty!"})
+    try:
+        keywords = keywords_str.split("|")
+        posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords))
+        target = TargetModel(keywords=keywords_str, begin_date=None, end_date=None, posts=posts.all(), result=0, reliability=0)
+        db.session.add(target)
+        db.session.commit()
+        return success({ "target": posts.count()})
+    except Exception as e:
+        return error({"message": str(e)})

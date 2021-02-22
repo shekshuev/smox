@@ -12,6 +12,7 @@ class PostModel(db.Model):
     from_id = db.Column(db.Integer, nullable=False, default=0)
     source_id = db.Column(db.Integer, db.ForeignKey("source.id"), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
+    target_id = db.Column(db.Integer, db.ForeignKey("target.id"), nullable=True)
     text = db.Column(db.Text, nullable=False, default="")
     value = db.Column(db.Integer, nullable=False, default=0)
     attachments = db.relationship(PostAttachmentModel, backref="post", lazy=True)

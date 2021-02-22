@@ -12,6 +12,7 @@ import TaskComponent from "src/components/task/task.vue";
 import PostComponent from "src/components/post/post.vue";
 import NotFoundComponent from "src/components/notfound/notfound.vue";
 import LogComponent from "src/components/logs/log.vue";
+import AnalyticsComponent from "src/components/analytics/analytics.vue";
 
 const router = new VueRouter({
     mode: "history",
@@ -22,6 +23,7 @@ const router = new VueRouter({
         { path: "/tasks", component: TaskComponent },
         { path: "/posts", component: PostComponent },
         { path: "/logs", component: LogComponent },
+        { path: "/analytics", component: AnalyticsComponent },
         { path: "*", component: NotFoundComponent }
     ]
 });

@@ -11,6 +11,7 @@ from app.api.log import api as log_api
 from app.api.source import api as source_api
 from app.api.post import api as post_api
 from app.api.task import api as task_api
+from app.api.target import api as target_api
 from auth.api import api as auth_api
 from app.views import views as app_views
 from auth.views import views as auth_views
@@ -30,6 +31,7 @@ app.register_blueprint(source_api)
 app.register_blueprint(post_api)
 app.register_blueprint(task_api)
 app.register_blueprint(auth_api)
+app.register_blueprint(target_api)
 app.register_blueprint(app_views)
 app.register_blueprint(auth_views)
 
@@ -43,4 +45,4 @@ from database.social.source import SourceModel
 from database.social.task_source import TaskSourceModel
 from database.social.task import TaskModel
 from database.social.target import TargetModel
-from database.social.target_source import TargetSourceModel
+from database.social.target import TargetPostModel

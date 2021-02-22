@@ -4,6 +4,7 @@ import accessProfile from "src/store/modules/access_profile/access_profile";
 import source from "src/store/modules/source/source";
 import task from "src/store/modules/task/task";
 import post from "src/store/modules/post/post";
+import target from "src/store/modules/target/target";
 
 Vue.use(Vuex);
 
@@ -33,7 +34,8 @@ const store = new Vuex.Store(
         accessProfile,
         source,
         task,
-        post
+        post,
+        target
     },
     strict: debug
 });
