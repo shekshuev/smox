@@ -15,15 +15,7 @@
                         <v-icon>mdi-database</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>Источники</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item link to="/tasks">
-                    <v-list-item-action>
-                        <v-icon>mdi-view-list</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>Задания</v-list-item-title>
+                        <v-list-item-title>Аналитика</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item link to="/posts">
@@ -31,20 +23,12 @@
                         <v-icon>mdi-post</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>Публикации</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item link to="/logs">
-                    <v-list-item-action>
-                        <v-icon>mdi-history</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>Логи </v-list-item-title>
+                        <v-list-item-title>Управление публикациями</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item link to="/settings">
                     <v-list-item-action>
-                        <v-icon>mdi-settings</v-icon>
+                        <v-icon>mdi-cog</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>Настройки</v-list-item-title>

@@ -1,8 +1,8 @@
 import Vue from "vue";
 import { mapState } from "vuex";
-import { getPosts, updatePost } from "src/api/post";
+//import { getPosts, updatePost } from "src/api/post";
 import postCard from "./postcard.vue";
-import { SET_OPTIONS, SET_START_DATE, SET_END_DATE } from "src/store/modules/post/mutation_types";
+//import { SET_OPTIONS, SET_START_DATE, SET_END_DATE } from "src/store/modules/post/mutation_types";
 
 export default Vue.component("posts",
 {
@@ -15,43 +15,6 @@ export default Vue.component("posts",
             posts: [],
             modal: false,
             dates: [ ],
-            footerProps: {
-                itemsPerPageOptions: [15, 30, 50, 100],
-                showFirstLastPage: true,
-                showCurrentPage: true
-            },
-            headers: [
-                {
-                    text: "PostId",
-                    align: "start",
-                    sortable: "false",
-                    value: "post_id"
-                },
-                {
-                    text: "OwnerId",
-                    align: "start",
-                    sortable: "false",
-                    value: "owner_id"
-                },
-                {
-                    text: "FromId",
-                    align: "start",
-                    sortable: "false",
-                    value: "from_id"
-                },
-                {
-                    text: "Дата публикации",
-                    align: "start",
-                    sortable: "false",
-                    value: "posted_date"
-                },
-                {
-                    text: "Класс",
-                    align: "start",
-                    sortable: "false",
-                    value: "class"
-                }
-            ]
         }
     },
     computed: {
@@ -83,42 +46,6 @@ export default Vue.component("posts",
     },
     methods: 
     {
-        dateToStr(date)
-        {
-            let year = date.getFullYear();
-            let month = (date.getMonth() + 1).toString().length == 1 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
-            let day = date.getDate().toString().length == 1 ? `0${date.getDate()}` : date.getDate();
-            return `${year}-${month}-${day}`;
-        },
-        async onDateSelected()
-        {
-            let newStartDate = this.dates[0] == null | undefined ? null : new Date(this.dates[0]);
-            let newEndDate = this.dates[1] == null | undefined ? null : new Date(this.dates[1]);
-            this.$store.dispatch(SET_START_DATE, newStartDate);
-            this.$store.dispatch(SET_END_DATE, newEndDate);
-            let newOptions = Object.assign({}, this.options);
-            newOptions.page = 1;
-            await this.updateOptions(newOptions);
-            this.modal = false;
-        },
-        async onDateCanceled()
-        {
-            this.modal = false;
-        },
-        async updateOptions(options)
-        {
-            this.loading = true;
-            this.posts = [];
-            let data = await getPosts(options.itemsPerPage, options.page, this.startDate, this.endDate)
-            this.posts = data.posts;
-            this.totalPosts = data.count;
-            this.loading = false;
-            this.$store.dispatch(SET_OPTIONS, options);
-        },
-        async updatePost(post)
-        {
-            if (await updatePost(post) == false)
-                post.class = 0;
-        }
+
     }
 });

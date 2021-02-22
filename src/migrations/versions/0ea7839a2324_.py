@@ -48,7 +48,7 @@ def upgrade():
     sa.Column('source_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('text', sa.Text(), nullable=False),
-    sa.Column('target', sa.Integer(), nullable=False),
+    sa.Column('value', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['source_id'], ['source.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

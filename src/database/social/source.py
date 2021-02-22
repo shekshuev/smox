@@ -2,6 +2,7 @@ from database import db
 from database.social.task_source import TaskSourceModel
 from database.social.post import PostModel
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from database.social.target_source import TargetSourceModel
 
 class SourceModel(db.Model):
     __tablename__ = "source"
@@ -31,4 +32,7 @@ class SourceSchemaNoRel(SQLAlchemyAutoSchema):
         model = SourceModel
         include_relationships = True
         load_instance = False
+
+
+
         

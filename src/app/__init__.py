@@ -14,6 +14,7 @@ from app.api.task import api as task_api
 from auth.api import api as auth_api
 from app.views import views as app_views
 from auth.views import views as auth_views
+import database
 
 
 app = Flask(__name__)
@@ -41,3 +42,5 @@ from database.social.post import PostModel
 from database.social.source import SourceModel
 from database.social.task_source import TaskSourceModel
 from database.social.task import TaskModel
+from database.social.target import TargetModel
+from database.social.target_source import TargetSourceModel
