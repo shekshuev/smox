@@ -26,3 +26,17 @@ export async function createTarget(target)
         return null;
     }
 }
+
+export async function deleteTarget(target)
+{
+    let response = await axios.delete(url, 
+    {
+        params: 
+        {
+            id: target.id
+        }
+    });
+    if (response.status == 200)
+        return true;
+    else false;
+}

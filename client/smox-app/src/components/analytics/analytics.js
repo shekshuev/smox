@@ -1,9 +1,12 @@
 import Vue from "vue";
 import { mapState } from "vuex";
-import { createTarget } from "src/api/target";
+import { createTarget, deleteTarget } from "src/api/target";
+import { DELETE_TARGET, CREATE_TARGET } from "src/store/modules/target/mutation_types";
+import targetCard from "src/components/target/target.vue"
 
 export default Vue.component("analytics",
 {
+    components: { targetCard },
     data: function()
     {
         return {
@@ -31,11 +34,23 @@ export default Vue.component("analytics",
         },
         async search()
         {
+            if (this.keywords.length == 0)
+                return;
             let target = 
             {
                 keywords: this.keywords.join("|")
             };
-            await createTarget(target);
+            let result = await createTarget(target);
+            if (result)
+            {
+                this.$store.dispatch(CREATE_TARGET, result);
+                this.dialog = false;
+            }
+        },
+        async dropTarget(target)
+        {
+            if (await deleteTarget(target))
+                this.$store.dispatch(DELETE_TARGET, target);
         }
     },
     computed: 

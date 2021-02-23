@@ -1,3 +1,4 @@
+from flask_sqlalchemy import model
 from sqlalchemy.orm import backref
 from database import db
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema

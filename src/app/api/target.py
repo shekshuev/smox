@@ -14,7 +14,7 @@ target_route = f"/api/v{API_VERSION}/target"
 @api.route(target_route, methods=["GET"])
 def read_target():
     if not "id" in request.args:
-        targets = [target.to_dict() for target in TargetModel.query.all()]
+        targets = [ {**target.to_dict(), **{"posts_count": len(target.posts) }} for target in TargetModel.query.all()]
         return success({ "targets": targets })
     id = request.args.get("id", 0, type=int)
     if id <= 0:
@@ -37,6 +37,19 @@ def create_target():
         target = TargetModel(keywords=keywords_str, begin_date=None, end_date=None, posts=posts.all(), result=0, reliability=0)
         db.session.add(target)
         db.session.commit()
-        return success({ "target": posts.count()})
+        return success({ "target": {**target.to_dict(), **{"posts_count": len(target.posts) }} })
     except Exception as e:
         return error({"message": str(e)})
+
+@api.route(target_route, methods=["DELETE"])
+def delete_target():
+    id = request.args.get("id", 0, type=int)
+    if id <= 0:
+        return error({ "message": f"Wrong id = {request.args.get('id')}" })
+    target = TargetModel.query.get(id)
+    if target:
+        db.session.delete(target)
+        db.session.commit()
+        return success({"id": id})
+    else: 
+        return error({ "message": f"Wrong id = {request.args.get('id')}" })
