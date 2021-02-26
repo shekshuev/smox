@@ -6,7 +6,7 @@ from database.social.target import TargetModel
 from database.social.post import PostModel
 from common.api_extensions import success, error
 from app.api.version import API_VERSION
-from sqlalchemy import and_
+from sqlalchemy import and_, Date, cast
 from app.model import XGBModel
 import datetime
 
@@ -47,7 +47,7 @@ def create_target():
     end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
     try:
         keywords = keywords_str.split("|")
-        posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords), PostModel.created_at >= begin_date, PostModel.created_at <= end_date)
+        posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords), cast(PostModel.created_at, Date) >= begin_date, cast(PostModel.created_at, Date) <= end_date)
         target = TargetModel(title=title, keywords=keywords_str, begin_date=begin_date, end_date=end_date, posts=posts.all(), result=0, reliability=0)
         xgb = XGBModel()
         target.result = xgb.predict(target.to_dataframe())

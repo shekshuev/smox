@@ -46,7 +46,7 @@
         </v-navigation-drawer>
         <v-app-bar app clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-            <v-toolbar-title>Application</v-toolbar-title>
+            <v-toolbar-title>Social Media Opinion Extractor</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon v-on:click="logout">
                 <v-icon>mdi-logout</v-icon>
