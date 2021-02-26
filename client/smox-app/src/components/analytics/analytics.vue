@@ -1,5 +1,5 @@
 <template>
-    <v-container>  
+    <v-container>
         <v-row>
             <v-col cols="12" sm="4" v-for="target in targets" v-bind:key="target.id">
                 <targetCard v-bind:target="target" v-bind:onDeleteButtonClicked="() => dropTarget(target)"/>

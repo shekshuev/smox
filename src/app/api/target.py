@@ -5,7 +5,8 @@ from database.social.target import TargetModel
 from database.social.post import PostModel
 from common.api_extensions import success, error
 from app.api.version import API_VERSION
-from sqlalchemy import and_, or_
+from sqlalchemy import and_
+from app.model import XGBModel
 
 api = Blueprint("target_api", __name__)
 
@@ -35,6 +36,8 @@ def create_target():
         keywords = keywords_str.split("|")
         posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords))
         target = TargetModel(keywords=keywords_str, begin_date=None, end_date=None, posts=posts.all(), result=0, reliability=0)
+        xgb = XGBModel()
+        target.result = xgb.predict(target.to_dataframe())
         db.session.add(target)
         db.session.commit()
         return success({ "target": {**target.to_dict(), **{"posts_count": len(target.posts) }} })
