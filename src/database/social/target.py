@@ -8,6 +8,7 @@ import pandas as pd
 class TargetModel(db.Model):
     __tablename__ = 'target'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text, nullable=False, default="Untitled")
     keywords = db.Column(db.Text, nullable=False)
     begin_date = db.Column(db.DateTime, nullable=True)
     end_date = db.Column(db.DateTime, nullable=True)

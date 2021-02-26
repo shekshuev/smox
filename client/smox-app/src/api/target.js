@@ -11,11 +11,14 @@ export async function readTargets()
     else return null;
 }
 
-export async function createTarget(target)
+export async function createTarget(title, keywords, beginDate, endDate)
 {
     let response = await axios.post(url, null, {
         params: {
-            keywords: target.keywords
+            title: title,
+            keywords: keywords,
+            begin_date: beginDate,
+            end_date: endDate
         }
     });
     if (response.status == 200)

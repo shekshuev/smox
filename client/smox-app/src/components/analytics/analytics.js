@@ -12,7 +12,11 @@ export default Vue.component("analytics",
         return {
             dialog: false,
             keywords: [],
-            keyword: ""
+            keyword: "",
+            title: "Untitled",
+            beginDate: new Date().toISOString().substr(0, 10),
+            endDate: new Date().toISOString().substr(0, 10),
+            step: 0
         }
     },
     methods: 
@@ -36,21 +40,27 @@ export default Vue.component("analytics",
         {
             if (this.keywords.length == 0)
                 return;
-            let target = 
-            {
-                keywords: this.keywords.join("|")
-            };
-            let result = await createTarget(target);
+            let result = await createTarget(this.title, this.keywords.join("|"), this.beginDate, this.endDate);
             if (result)
             {
                 this.$store.dispatch(CREATE_TARGET, result);
                 this.dialog = false;
+                this.clearData()
             }
         },
         async dropTarget(target)
         {
             if (await deleteTarget(target))
                 this.$store.dispatch(DELETE_TARGET, target);
+        },
+        clearData()
+        {
+            this.keywords = [];
+            this.keyword = "";
+            this.title = "Untitled";
+            this.beginDate = new Date().toISOString().substr(0, 10);
+            this.endDate = new Date().toISOString().substr(0, 10);
+            this.step = 0;
         }
     },
     computed: 
