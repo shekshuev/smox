@@ -3,16 +3,15 @@ import API_URL from "./base.js"
 
 const url = `${API_URL}post`;
 
-export async function getPosts(count = 15, page = 1, startDate=null, endDate=null)
+export async function getPosts(count = 100) //, startDate=null, endDate=null)
 {
     let response = await axios.get(url, 
     {
         params: 
         {
-            count: count,
-            page: page, 
-            start_date: startDate.getTime() / 1000,
-            end_date: endDate.getTime() / 1000
+            count: count
+            //start_date: startDate.getTime() / 1000,
+            //end_date: endDate.getTime() / 1000
         }
     });
     if (response.status == 200)

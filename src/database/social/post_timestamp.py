@@ -12,4 +12,10 @@ class PostTimestampModel(db.Model):
     comments_count = db.Column(db.Integer, nullable=False, default=0)
 
     __table_args__ = (Index('pk_idx_post_timestamp', "post_id", "created_at", unique=True), )
+
+class PostTimestampSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PostTimestampModel
+        include_relationships = True
+        load_instance = True
     

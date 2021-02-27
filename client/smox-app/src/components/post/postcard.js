@@ -8,5 +8,9 @@ export default Vue.component("postcard",
         return {
 
         }
+    },
+    mounted: function()
+    {
+        //console.log(this.post)
     }
 });

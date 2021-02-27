@@ -1,6 +1,6 @@
 from database import db
 from database.social.task_source import TaskSourceModel
-from database.social.post import PostModel
+#from database.social.post import PostModel
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 class SourceModel(db.Model):
@@ -12,7 +12,7 @@ class SourceModel(db.Model):
     description = db.Column(db.Text, nullable=False)
     photo = db.Column(db.Text, nullable=False)
     task_sources = db.relationship(TaskSourceModel, backref="source", lazy=True)
-    posts = db.relationship(PostModel, backref="source", lazy=True)
+    #posts = db.relationship("posts", backref=db.backref('source', lazy=True))
 
     def to_dict(self, rel=False):
         if rel:
@@ -29,7 +29,7 @@ class SourceSchema(SQLAlchemyAutoSchema):
 class SourceSchemaNoRel(SQLAlchemyAutoSchema):
     class Meta:
         model = SourceModel
-        include_relationships = True
+        include_relationships = False
         load_instance = False
 
 

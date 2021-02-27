@@ -1,8 +1,11 @@
+from sqlalchemy.orm import backref
 from database import db
 from sqlalchemy import Index
+from marshmallow import fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from database.social.post_attachment import PostAttachmentModel
-from database.social.post_timestamp import PostTimestampModel
+from database.social.post_timestamp import PostTimestampModel, PostTimestampSchema
+from database.social.source import SourceModel, SourceSchemaNoRel
 
 class PostModel(db.Model):
     __tablename__ = "post"
@@ -11,6 +14,7 @@ class PostModel(db.Model):
     owner_id = db.Column(db.Integer, nullable=False, default=0)
     from_id = db.Column(db.Integer, nullable=False, default=0)
     source_id = db.Column(db.Integer, db.ForeignKey("source.id"), nullable=False)
+    source = db.relationship(SourceModel, backref="posts")
     created_at = db.Column(db.DateTime, nullable=False)
     text = db.Column(db.Text, nullable=False, default="")
     value = db.Column(db.Integer, nullable=False, default=0)
@@ -30,9 +34,11 @@ class PostSchema(SQLAlchemyAutoSchema):
         model = PostModel
         include_relationships = True
         load_instance = True
+    timestamps = fields.Nested(PostTimestampSchema, many=True)
+    source = fields.Nested(SourceSchemaNoRel)
 
 class PostSchemaNoRel(SQLAlchemyAutoSchema):
     class Meta:
         model = PostModel
-        include_relationships = True
+        include_relationships = False
         load_instance = False

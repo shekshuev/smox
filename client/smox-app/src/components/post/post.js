@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { mapState } from "vuex";
-//import { getPosts, updatePost } from "src/api/post";
+import { getPosts } from "src/api/post";
 import postCard from "./postcard.vue";
 //import { SET_OPTIONS, SET_START_DATE, SET_END_DATE } from "src/store/modules/post/mutation_types";
 
@@ -33,19 +33,27 @@ export default Vue.component("posts",
             endDate: state => state.post.endDate,
         })
     },
-    mounted: function()
+    mounted: async function()
     {
-        if (this.startDate)
+        await this.loadPosts()
+        /*if (this.startDate)
         {
             this.dates.push(this.dateToStr(this.startDate))
             if (this.endDate)
             {
                 this.dates.push(this.dateToStr(this.endDate))
             }
-        }
+        }*/
     },
     methods: 
     {
-
+        loadPosts: async function()
+        {
+            let result = await getPosts();
+            if (result)
+            {
+                this.posts = result.posts
+            }
+        }
     }
 });
