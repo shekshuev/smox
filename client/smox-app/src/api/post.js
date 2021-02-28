@@ -19,6 +19,20 @@ export async function getPosts(count = 100) //, startDate=null, endDate=null)
     else return null;
 }
 
+export async function filterPosts(target_id)
+{
+    let response = await axios.get(url, 
+    {
+        params: 
+        {
+            target_id: target_id
+        }
+    });
+    if (response.status == 200)
+        return response.data.response;
+    else return null;
+}
+
 export async function updatePost(post)
 {
     let form = new FormData();

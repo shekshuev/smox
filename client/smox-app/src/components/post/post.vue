@@ -4,12 +4,20 @@
             <v-col cols="12" sm="4">
                 <v-card outlined>
                     <v-card-title>Фильтр</v-card-title>
+                    <v-card-text>
+                        <v-select v-bind:items="targets" outlined dense label="Целевой объект" v-model="target" item-text="title" return-object></v-select>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="secondary" text v-on:click="clearFilter">Сброс</v-btn>
+                        <v-btn color="primary" text v-on:click="applyFilter">Применить</v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
             <v-col v-if="posts.length > 0" cols="12" sm="8">
                 <v-virtual-scroll v-bind:bench="3" v-bind:items="posts" height="700" :item-height="270">
                     <template v-slot:default="post">
-                        <postcard :post="post.item"></postcard>
+                        <postcard v-bind:post="post.item"></postcard>
                     </template>
                 </v-virtual-scroll>
             </v-col>

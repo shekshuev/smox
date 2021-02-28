@@ -9,7 +9,29 @@ export default Vue.component("app",
     data: function()
     {
         return {
-            drawer: false
+            drawer: false,
+            menu: {
+                "/": {
+                    "icon": "mdi-view-dashboard",
+                    "title": "Главная",
+                },
+                "/analytics": {
+                    "icon": "mdi-database",
+                    "title": "Аналитика",
+                },
+                "/posts": {
+                    "icon": "mdi-post",
+                    "title": "Публикации",
+                },
+                "/settings": {
+                    "icon": "mdi-cog",
+                    "title": "Настройки",
+                },
+                "/logs": {
+                    "icon": "mdi-notebook",
+                    "title": "Логи",
+                }
+            }
         }
     },
     created: function()
@@ -26,6 +48,13 @@ export default Vue.component("app",
         {
             //window.location = "/account/logout";
             console.log("logout")
+        }
+    },
+    computed: 
+    {
+        title: function()
+        {
+            return this.menu[this.$route.path].title;
         }
     }
 })

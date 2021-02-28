@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { mapState } from "vuex";
-import { getPosts } from "src/api/post";
+import { getPosts, filterPosts } from "src/api/post";
 import postCard from "./postcard.vue";
 //import { SET_OPTIONS, SET_START_DATE, SET_END_DATE } from "src/store/modules/post/mutation_types";
 
@@ -15,6 +15,7 @@ export default Vue.component("posts",
             posts: [],
             modal: false,
             dates: [ ],
+            target: null
         }
     },
     computed: {
@@ -31,6 +32,7 @@ export default Vue.component("posts",
             options: state => state.post.options,
             startDate: state => state.post.startDate,
             endDate: state => state.post.endDate,
+            targets: state => state.target.targets
         })
     },
     mounted: async function()
@@ -52,8 +54,24 @@ export default Vue.component("posts",
             let result = await getPosts();
             if (result)
             {
-                this.posts = result.posts
+                this.posts = result.posts;
             }
+        }, 
+        applyFilter: async function()
+        {
+            if (this.target != null)
+            {
+                let result = await filterPosts(this.target.id);
+                if (result)
+                {
+                    this.posts = result.posts;
+                }
+            }
+            
+        },
+        clearFilter: function()
+        {
+            this.target = null;
         }
     }
 });
