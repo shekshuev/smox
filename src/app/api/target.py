@@ -50,7 +50,11 @@ def create_target():
         posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords), cast(PostModel.created_at, Date) >= begin_date, cast(PostModel.created_at, Date) <= end_date)
         target = TargetModel(title=title, keywords=keywords_str, begin_date=begin_date, end_date=end_date, posts=posts.all(), result=0, reliability=0)
         xgb = XGBModel()
-        target.result = xgb.predict(target.to_dataframe())
+        result = xgb.predict(target.to_dataframe())
+        for _, row in result["posts"].iterrows():
+            post = PostModel.query.get(row["id"])
+            post.value = row["value"]
+        target.result = result["value"]
         db.session.add(target)
         db.session.commit()
         return success({ "target": {**target.to_dict(), **{"posts_count": len(target.posts) }} })

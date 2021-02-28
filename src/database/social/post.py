@@ -17,7 +17,8 @@ class PostModel(db.Model):
     source = db.relationship(SourceModel, backref="posts")
     created_at = db.Column(db.DateTime, nullable=False)
     text = db.Column(db.Text, nullable=False, default="")
-    value = db.Column(db.Integer, nullable=False, default=0)
+    value = db.Column(db.Integer, nullable=False, default=-1)
+    fit_value = db.Column(db.Integer, nullable=False, default=-1)
     attachments = db.relationship(PostAttachmentModel, backref="post", lazy=True)
     timestamps = db.relationship(PostTimestampModel, backref="post", lazy=True)
 

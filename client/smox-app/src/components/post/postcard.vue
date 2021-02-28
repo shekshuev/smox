@@ -1,8 +1,10 @@
 <template>
-    <v-card outlined max-height="250" min-height="250">
+    <v-card outlined max-height="250" min-height="250" v-bind:style="border">
         <v-card-title>
             <v-icon large left>mdi-vk</v-icon>
             <span class="title font-weight-light">Вконтакте</span>
+            <v-spacer></v-spacer>
+            <v-icon large v-bind:color="color">{{ icon }}</v-icon>
         </v-card-title>
         <v-card-text >
             <p class="text">{{ post.text }}</p>

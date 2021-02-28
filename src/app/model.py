@@ -43,7 +43,7 @@ class XGBModel:
 
     def __convert_data(self, data):
         #data["created_at"] = np.where(data["created_at"] == 0, data["downloaded_date"], data["posted_date"])
-        data = data.groupby("post_id")
+        data = data.groupby("id")
         groups = [data.get_group(x) for x in data.groups]
         groups = self.__prepare_data(groups)
         if len(groups) == 0:
@@ -53,7 +53,7 @@ class XGBModel:
             x = np.arange(1, len(group) + 1)
             last = group.iloc[len(group) - 1]
             # первичные показатели
-            row = [ last["comments"], last["likes"], last["views"], last["reposts"] ]
+            row = [ last["id"], last["comments"], last["likes"], last["views"], last["reposts"] ]
             # далее производные показатели
             # аппроксимация функций изменения комментариев, лайков и просмотров от времени натуральным логарифмом
             coefs_comments = self.__ln_coefs(x, group["comments"])
@@ -70,16 +70,21 @@ class XGBModel:
             row.extend(self.__ln_dx(x, coefs_views))
             rows.append(row) 
         converted = pd.DataFrame(rows)
+        converted = converted.rename(columns={ 0: "id" })
         scaler = StandardScaler()
-        X = scaler.fit_transform(converted)
-        return X
+        X = scaler.fit_transform(converted.drop(columns=["id"]))
+        return X, converted.drop(columns=range(1, len(converted.columns), 1))
 
     def predict(self, data):
-        X = self.__convert_data(data)
+        X, posts = self.__convert_data(data)
         if X is None:
             return None
         X = xgb.DMatrix(X)
         model = xgb.Booster() 
         model.load_model(os.path.join(os.path.dirname(__file__), "trained_xgb.json"))
         y_pred = model.predict(X)
-        return np.count_nonzero(y_pred) / len(y_pred)
+        posts["value"] = y_pred
+        return {
+            "value": np.count_nonzero(y_pred) / len(y_pred),
+            "posts": posts
+        }

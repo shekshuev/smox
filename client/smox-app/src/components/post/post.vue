@@ -14,14 +14,14 @@
                     </v-card-actions>
                 </v-card>
             </v-col>
-            <v-col v-if="posts.length > 0" cols="12" sm="8">
+            <v-col v-if="!loading" cols="12" sm="8">
                 <v-virtual-scroll v-bind:bench="3" v-bind:items="posts" height="700" :item-height="270">
                     <template v-slot:default="post">
                         <postcard v-bind:post="post.item"></postcard>
                     </template>
                 </v-virtual-scroll>
             </v-col>
-            <v-col v-if="posts == null || posts.length <= 0" cols="12" sm="8">
+            <v-col v-if="posts == null || loading" cols="12" sm="8">
                 <v-card outlined v-for="i in [0, 1, 2]" v-bind:key="i" class="mb-3">
                     <v-card-text>
                         <v-skeleton-loader type="list-item-avatar, list-item-three-line, card-heading"></v-skeleton-loader>

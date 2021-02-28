@@ -38,40 +38,37 @@ export default Vue.component("posts",
     mounted: async function()
     {
         await this.loadPosts()
-        /*if (this.startDate)
-        {
-            this.dates.push(this.dateToStr(this.startDate))
-            if (this.endDate)
-            {
-                this.dates.push(this.dateToStr(this.endDate))
-            }
-        }*/
     },
     methods: 
     {
         loadPosts: async function()
         {
+            this.loading = true;
             let result = await getPosts();
             if (result)
             {
                 this.posts = result.posts;
+                this.loading = false;
             }
         }, 
         applyFilter: async function()
         {
             if (this.target != null)
             {
+                this.loading = true;
                 let result = await filterPosts(this.target.id);
                 if (result)
                 {
                     this.posts = result.posts;
+                    this.loading = false;
                 }
             }
             
         },
-        clearFilter: function()
+        clearFilter: async function()
         {
             this.target = null;
+            await this.loadPosts();
         }
     }
 });
