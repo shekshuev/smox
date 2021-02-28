@@ -59,7 +59,7 @@ def stop_task():
     print(request.args)
     id = request.args.get("id", 0, type=int)
     if id <= 0:
-        return error({ "message": f"Wrong id = {request.args.get('id')}" })
+        return error({ "message": f"Wrong id = { request.args.get('id')}" })
     task = TaskModel.query.get(id)
     if task:
         task.is_finished = True
@@ -67,21 +67,18 @@ def stop_task():
         db.session.commit()
         return success({"task": task.to_dict(True)})
     else: 
-        return error({ "message": f"Wrong id = {request.args.get('id')}" })
+        return error({ "message": f"Wrong id = { request.args.get('id')}" })
 
-    """
+    
 @api.route(task_route, methods=["DELETE"])
 def delete_task():
     id = request.args.get("id", 0, type=int)
     if id <= 0:
-        return error({ "message": f"Wrong id = {request.args.get('id')}" })
-    res = TaskModel.delete_by_id(id)
-    # Cascade doesn't work
-    res = TaskSourceModel.delete().where(TaskSourceModel.task == id).execute()
-    if bool(res):
+        return error({ "message": f"Wrong id = { request.args.get('id')}" })
+    task = TaskModel.query.get(id)
+    if task:
+        db.session.delete(task)
+        db.session.commit()
         return success({"id": id})
     else: 
-        return error({ "message": f"Wrong id = {request.args.get('id')}" })
-
-
-    """
+        return error({ "message": f"Wrong id = { request.args.get('id')}" })

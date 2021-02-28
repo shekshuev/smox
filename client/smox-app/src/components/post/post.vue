@@ -15,7 +15,7 @@
                 </v-card>
             </v-col>
             <v-col v-if="!loading" cols="12" sm="8">
-                <v-virtual-scroll v-bind:bench="3" v-bind:items="posts" height="700" :item-height="270">
+                <v-virtual-scroll v-bind:bench="3" v-bind:items="posts" height="700" :item-height="280">
                     <template v-slot:default="post">
                         <postcard v-bind:post="post.item"></postcard>
                     </template>

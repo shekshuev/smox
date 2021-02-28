@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined max-height="250" min-height="250" v-bind:style="border">
+    <v-card outlined max-height="260" min-height="260" v-bind:style="border">
         <v-card-title>
             <v-icon large left>mdi-vk</v-icon>
             <span class="title font-weight-light">Вконтакте</span>
@@ -8,6 +8,7 @@
         </v-card-title>
         <v-card-text >
             <p class="text">{{ post.text }}</p>
+            <span>{{ new Date(post.created_at).toLocaleDateString() + " " + new Date(post.created_at).toLocaleTimeString()  }}</span>
         </v-card-text>
         <v-card-actions>
             <v-list-item class="grow">

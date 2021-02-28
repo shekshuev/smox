@@ -23,6 +23,16 @@ export default Vue.component("app",
                     "icon": "mdi-post",
                     "title": "Публикации",
                 },
+                "/tasks": 
+                {
+                    "icon": "mdi-calendar-check",
+                    "title": "Задания"
+                },
+                "/sources": 
+                {
+                    "icon": "mdi-cloud-download",
+                    "title": "Источники"
+                },
                 "/settings": {
                     "icon": "mdi-cog",
                     "title": "Настройки",
@@ -36,11 +46,12 @@ export default Vue.component("app",
     },
     created: function()
     {
-        //this.$vuetify.theme.dark = true
+        this.$vuetify.theme.dark = this.$store.state.settings.appearance.dark_mode
         this.$store.dispatch(LOAD_ACCESS_PROFILES);
         this.$store.dispatch(LOAD_SOURCES);
         this.$store.dispatch(LOAD_TASKS);
         this.$store.dispatch(READ_TARGETS);
+        
     },
     methods: 
     {

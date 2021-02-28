@@ -1,6 +1,7 @@
 from database import db
 from database.social.task_source import TaskSourceModel
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from database.social.source import SourceModel
 
 class TaskModel(db.Model):
     __tablename__ = "task"
@@ -9,10 +10,10 @@ class TaskModel(db.Model):
     begin_datetime = db.Column(db.DateTime, nullable=False)
     end_datetime = db.Column(db.DateTime, nullable=True)
     requests_count = db.Column(db.Integer, nullable=False, default=0)
-    access_profile_id = db.Column(db.Integer, db.ForeignKey("access_profile.id"), nullable=False)
+    access_profile_id = db.Column(db.Integer, db.ForeignKey("access_profile.id", ondelete="RESTRICT"), nullable=False)
     is_error = db.Column(db.Boolean, nullable=False, default=False)
     error = db.Column(db.Text, nullable=False, default="")
-    task_sources = db.relationship(TaskSourceModel, backref="task", lazy=True)
+    sources = db.relationship(SourceModel, secondary=lambda: TaskSourceModel.__table__, backref=db.backref('tasks', lazy=True))
     
     def to_dict(self, rel=False):
         if rel:

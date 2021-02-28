@@ -4,8 +4,8 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 class TaskSourceModel(db.Model):
     __tablename__ = "task_source"
-    source_id = db.Column(db.Integer, db.ForeignKey("source.id"), nullable=False, primary_key=True)
-    task_id = db.Column(db.Integer, db.ForeignKey("task.id"), nullable=False, primary_key=True)
+    source_id = db.Column(db.Integer, db.ForeignKey("source.id", ondelete="RESTRICT"), nullable=False, primary_key=True)
+    task_id = db.Column(db.Integer, db.ForeignKey("task.id", ondelete="CASCADE"), nullable=False, primary_key=True)
     total_objects_downloaded = db.Column(db.Integer, nullable=False, default=0)
     offset = db.Column(db.Integer, nullable=False, default=0)
     count = db.Column(db.Integer, nullable=False, default=0)
