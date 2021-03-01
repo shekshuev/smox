@@ -2,15 +2,24 @@ import Vue from "vue";
 import { mapState } from "vuex";
 import { addProfile, deleteProfile } from "src/api/access_profile";
 import { ADD_ACCESS_PROFILE, DELETE_ACCESS_PROFILE } from "src/store/modules/access_profile/mutation_types";
-import { deleteSource } from "src/api/source";
-import { DELETE_SOURCE } from "src/store/modules/source/mutation_types";
+import { createSource, searchSource, deleteSource } from "src/api/source";
+import { ADD_SOURCE, DELETE_SOURCE } from "src/store/modules/source/mutation_types";
 import { SET_APPEARANCE } from "src/store/modules/settings/mutation_types";
+import sourceCard from "src/components/source/sourcecard.vue";
 
 export default Vue.component("settings",
 {
+    components: { sourceCard },
     data: function()
     {
         return {
+            sourceDialog: false,
+            step: 0,
+            source: null,
+            selectedAccessProfile: null,
+            request: "",
+            loading: false,
+            delay: 0,
             valid: false,
             name: "",
             rules: [
@@ -39,6 +48,21 @@ export default Vue.component("settings",
             }
         }
     },
+    watch: 
+    {
+        request: async function (newRequest)
+        {
+            
+            clearTimeout(this.delay);
+            if (newRequest == "") return;
+            this.delay = setTimeout(async () => 
+            {
+                this.loading = true;
+                this.source = await searchSource(newRequest, this.selectedAccessProfile.access_token);
+                this.loading = false;
+            }, 2000);
+        }
+    },
     methods: 
     {
         async addAccessProfile()
@@ -58,6 +82,24 @@ export default Vue.component("settings",
         {
             if (await deleteSource(source))
                 this.$store.dispatch(DELETE_SOURCE, source);
+        },
+        async saveSource()
+        {
+            let result = await createSource(this.source)
+            if (result != null)
+            {
+                this.$store.dispatch(ADD_SOURCE, result);
+                this.sourceDialog = false;
+                this.clearSource()
+            }
+        },
+        clearSource()
+        {
+            this.source = null;
+            this.request = "";
+            this.loading = false;
+            clearTimeout(this.delay);
+            this.delay = 0;
         }
     }
 });

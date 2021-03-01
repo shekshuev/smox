@@ -23,7 +23,6 @@ export async function addProfile(profile)
         return response.data.response.access_profile;
     else 
     {
-        console.log(response.data)
         return null;
     }
 }

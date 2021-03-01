@@ -11,14 +11,32 @@ export async function getSources ()
     else return null;
 }
 
-export async function addSource(request, accessToken)
+export async function searchSource(request, accessToken)
 {
-    let response = await axios.post(url, null, 
+    let response = await axios.get(url,
     {
         params: 
         {
             request: request,
             access_token: accessToken
+        }
+    });
+    if (response.status == 200)
+        return response.data.response.source;
+    else return null;
+}
+
+export async function createSource(source)
+{
+    let response = await axios.post(url, null, 
+    {
+        params: 
+        {
+            source_id: source.source_id,
+            name: source.name,
+            domain: source.domain,
+            description: source.description,
+            photo: source.photo
         }
     });
     if (response.status == 200)

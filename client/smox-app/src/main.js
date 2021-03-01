@@ -6,7 +6,6 @@ import vuetify from "./plugins/vuetify";
 import store from "./store";
 
 import DashboardComponent from "src/components/dashboard/dashboard.vue";
-import SourceComponent from "src/components/source/source.vue";
 import SettingsComponent from "src/components/settings/settings.vue";
 import TaskComponent from "src/components/task/task.vue";
 import PostComponent from "src/components/post/post.vue";
@@ -18,7 +17,6 @@ const router = new VueRouter({
     mode: "history",
     routes: [
         { path: "/", component: DashboardComponent },
-        { path: "/sources", component: SourceComponent },
         { path: "/settings", component: SettingsComponent },
         { path: "/tasks", component: TaskComponent },
         { path: "/posts", component: PostComponent },

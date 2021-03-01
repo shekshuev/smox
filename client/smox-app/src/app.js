@@ -28,11 +28,6 @@ export default Vue.component("app",
                     "icon": "mdi-calendar-check",
                     "title": "Задания"
                 },
-                "/sources": 
-                {
-                    "icon": "mdi-cloud-download",
-                    "title": "Источники"
-                },
                 "/settings": {
                     "icon": "mdi-cog",
                     "title": "Настройки",

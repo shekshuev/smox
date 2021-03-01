@@ -22,7 +22,6 @@
                             <v-stepper-content step=0>
                                 <v-text-field v-model="title" hide-details label="Название ЦО" single-line></v-text-field>
                                 <v-btn v-if="title.length > 0" color="blue darken-1" text v-on:click="step = 1">Далее</v-btn>
-                                <v-btn color="blue darken-1" text v-on:click="dialog = false">Отмена</v-btn>
                             </v-stepper-content>
                             <v-stepper-step step=1 :complete="step > 1">Ключевые слова</v-stepper-step>
                             <v-stepper-content step=1 >

@@ -16,7 +16,7 @@
                 </v-list-item>
                 <v-list-item link>
                     <v-list-item-content class="list-item-content-center">
-                        <v-list-item-title  class="primary--text">Добавить профиль</v-list-item-title>
+                        <v-list-item-title class="primary--text">Добавить профиль</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -38,7 +38,7 @@
                         </v-btn>
                     </v-list-item-action>
                 </v-list-item>
-                <v-list-item link>
+                <v-list-item link v-on:click="sourceDialog=true">
                     <v-list-item-content class="list-item-content-center">
                         <v-list-item-title class="primary--text">Добавить источник</v-list-item-title>
                     </v-list-item-content>
@@ -48,7 +48,7 @@
         <v-card>
             <v-list subheader rounded>
                 <v-subheader>Внешний вид</v-subheader>
-                <v-list-item >
+                <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>Темная тема</v-list-item-title>
                     </v-list-item-content>
@@ -58,6 +58,49 @@
                 </v-list-item>
             </v-list>
         </v-card>
+        <v-dialog v-model="sourceDialog" max-width="600px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline">Новый источник</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-stepper v-model="step" vertical class="stepper">
+                        <v-stepper-items>
+                            <v-stepper-step step=0 :complete="step > 0">Профиль доступа</v-stepper-step>
+                            <v-stepper-content step=0>
+                                <v-select v-model="selectedAccessProfile" v-bind:items="accessProfiles" outlined dense label="Профиль доступа" item-text="name" return-object></v-select>
+                                <v-btn v-if="selectedAccessProfile != null" color="blue darken-1" text v-on:click="step = 1">Далее</v-btn>
+                            </v-stepper-content>
+                            <v-stepper-step step=1 :complete="step > 1">Id или домен</v-stepper-step>
+                            <v-stepper-content step=1>
+                                <div class="stepper-content">
+                                    <v-text-field v-model="request" label="Id или домен">
+                                        <template v-slot:append>
+                                            <v-progress-circular v-if="loading" indeterminate size="25"></v-progress-circular>
+                                        </template>
+                                    </v-text-field>
+                                    <v-list-item v-if="source != null">
+                                        <v-list-item-avatar>
+                                            <v-img :src="source.photo"></v-img>
+                                        </v-list-item-avatar>
+                                        <v-list-item-content>
+                                            <v-list-item-title>{{ source.name }}</v-list-item-title>
+                                            <v-list-item-subtitle>{{ source.description }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                    <v-btn color="blue darken-1" text v-on:click="step = 0">Назад</v-btn>
+                                </div>
+                            </v-stepper-content>
+                        </v-stepper-items>
+                    </v-stepper>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn v-if="source != null" color="blue darken-1" text v-on:click="saveSource">Добавить</v-btn>
+                    <v-btn color="blue darken-1" text v-on:click="sourceDialog = false">Отмена</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
     <!--<v-container fluid>
         <v-row>
@@ -114,6 +157,14 @@
     {
         align-items: center;
         text-align: center !important;
+    }
+    .stepper{
+        box-shadow: none;
+    }
+    .stepper-content 
+    {
+        overflow-y: scroll;
+        height: 100%
     }
 </style>
 <script src="./settings.js"></script>
