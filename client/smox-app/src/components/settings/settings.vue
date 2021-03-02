@@ -14,7 +14,7 @@
                         </v-btn>
                     </v-list-item-action>
                 </v-list-item>
-                <v-list-item link>
+                <v-list-item link v-on:click="accessProfileDialog=true">
                     <v-list-item-content class="list-item-content-center">
                         <v-list-item-title class="primary--text">Добавить профиль</v-list-item-title>
                     </v-list-item-content>
@@ -58,7 +58,25 @@
                 </v-list-item>
             </v-list>
         </v-card>
-        <v-dialog v-model="sourceDialog" max-width="600px">
+        <v-dialog v-model="accessProfileDialog" max-width="600px" persistent>
+            <v-card>
+                <v-card-title>
+                    <span class="headline">Новый профиль доступа</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-form ref="accessProfileForm">
+                        <v-text-field v-model="name" v-bind:rules="rules" label="Название" required></v-text-field>
+                        <v-text-field v-model="accessToken" v-bind:rules="rules" label="Токен" required></v-text-field>
+                    </v-form>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text v-on:click="addAccessProfile">Добавить</v-btn> 
+                    <v-btn color="primary" text v-on:click="accessProfileDialog = false">Отмена</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="sourceDialog" max-width="600px" persistent>
             <v-card>
                 <v-card-title>
                     <span class="headline">Новый источник</span>
@@ -69,7 +87,7 @@
                             <v-stepper-step step=0 :complete="step > 0">Профиль доступа</v-stepper-step>
                             <v-stepper-content step=0>
                                 <v-select v-model="selectedAccessProfile" v-bind:items="accessProfiles" outlined dense label="Профиль доступа" item-text="name" return-object></v-select>
-                                <v-btn v-if="selectedAccessProfile != null" color="blue darken-1" text v-on:click="step = 1">Далее</v-btn>
+                                <v-btn v-if="selectedAccessProfile != null" color="primary" text v-on:click="step = 1">Далее</v-btn>
                             </v-stepper-content>
                             <v-stepper-step step=1 :complete="step > 1">Id или домен</v-stepper-step>
                             <v-stepper-content step=1>
@@ -88,7 +106,7 @@
                                             <v-list-item-subtitle>{{ source.description }}</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
-                                    <v-btn color="blue darken-1" text v-on:click="step = 0">Назад</v-btn>
+                                    <v-btn color="primary" text v-on:click="step = 0">Назад</v-btn>
                                 </div>
                             </v-stepper-content>
                         </v-stepper-items>
@@ -96,61 +114,39 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn v-if="source != null" color="blue darken-1" text v-on:click="saveSource">Добавить</v-btn>
-                    <v-btn color="blue darken-1" text v-on:click="sourceDialog = false">Отмена</v-btn>
+                    <v-btn v-if="source != null" color="primary" text v-on:click="saveSource">Добавить</v-btn>
+                    <v-btn color="primary" text v-on:click="sourceDialog = false">Отмена</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="confirmDialog" persistent max-width="290">
+            <v-card>
+                <v-card-title class="headline">Удалить объект?</v-card-title>
+                <v-card-text v-if="deletableObject != null">
+                    <v-list-item v-if="deletableObject.type == 'source'">
+                        <v-list-item-avatar>
+                            <v-img :src="deletableObject.payload.photo"></v-img>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ deletableObject.payload.name }}</v-list-item-title>
+                            <v-list-item-subtitle>{{ deletableObject.payload.description }}</v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item v-if="deletableObject.type == 'profile'">
+                        <v-list-item-content>
+                            <v-list-item-title>{{ deletableObject.payload.name }}</v-list-item-title>
+                            <v-list-item-subtitle>{{ deletableObject.payload.access_token }}</v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="() => closeConfirmDialog()">Отмена</v-btn>
+                    <v-btn color="red" text @click="deleteObject">Да, удалить</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
     </v-container>
-    <!--<v-container fluid>
-        <v-row>
-            <v-col>
-                <v-simple-table>
-                    <thead>
-                        <tr>
-                            <th>Номер</th>
-                            <th>Название</th>
-                            <th>Токен</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(profile, index) in accessProfiles" v-bind:key="index">
-                            <td>{{ index + 1 }}</td>
-                            <td>{{ profile.name }}</td>
-                            <td>{{ profile.access_token }}</td>
-                            <td>
-                                <v-btn icon>
-                                    <v-icon v-on:click="deleteAccessProfile(profile)">mdi-delete</v-icon>
-                                </v-btn>
-                            </td>
-                        </tr>
-                    </tbody>
-                </v-simple-table>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <v-form v-model="valid">
-                    <v-container>
-                        <v-row>
-                            <v-col md="4">
-                                <v-text-field v-model="name" v-bind:rules="rules" label="Название" required></v-text-field>
-                            </v-col>
-                            <v-col md="8">
-                                <v-text-field v-model="accessToken" v-bind:rules="rules" label="Токен" required></v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col class="d-flex flex-row-reverse">
-                                <v-btn color="primary" v-on:click="addAccessProfile">Добавить</v-btn> 
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </v-form>
-            </v-col>
-        </v-row>
-    </v-container>-->
 </template>
 <style>
     .list-item-content-center

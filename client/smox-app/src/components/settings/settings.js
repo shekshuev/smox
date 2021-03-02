@@ -13,6 +13,7 @@ export default Vue.component("settings",
     data: function()
     {
         return {
+            accessProfileDialog: false,
             sourceDialog: false,
             step: 0,
             source: null,
@@ -25,7 +26,9 @@ export default Vue.component("settings",
             rules: [
                 v => !!v || "Поле обязательно для заполнения",
             ],
-            accessToken: ""
+            accessToken: "",
+            confirmDialog: false,
+            deletableObject: null
         }
     },
     computed: {
@@ -67,21 +70,35 @@ export default Vue.component("settings",
     {
         async addAccessProfile()
         {
-            let result = await addProfile({ name: this.name, accessToken: this.accessToken });
-            if (result != null)
-                this.$store.dispatch(ADD_ACCESS_PROFILE, result);
+            if (this.$refs.accessProfileForm.validate())
+            {
+                let result = await addProfile({ name: this.name, accessToken: this.accessToken });
+                if (result != null)
+                {
+                    this.$store.dispatch(ADD_ACCESS_PROFILE, result);
+                    this.name = ""
+                    this.accessToken = ""
+                    this.accessProfileDialog = false;
+                }
+            }
         },
         async deleteAccessProfile(profile)
         {
-            if (await deleteProfile(profile))
+            this.deletableObject = 
             {
-                this.$store.dispatch(DELETE_ACCESS_PROFILE, profile);
-            }
+                type: "profile",
+                payload: profile
+            };
+            this.confirmDialog = true;
         },
         async deleteSource(source)
         {
-            if (await deleteSource(source))
-                this.$store.dispatch(DELETE_SOURCE, source);
+            this.deletableObject = 
+            {
+                type: "source",
+                payload: source
+            };
+            this.confirmDialog = true;
         },
         async saveSource()
         {
@@ -100,6 +117,30 @@ export default Vue.component("settings",
             this.loading = false;
             clearTimeout(this.delay);
             this.delay = 0;
+        },
+        async deleteObject()
+        {
+            if (this.deletableObject.type == "source")
+            {
+                if (await deleteSource(this.deletableObject.payload))
+                {
+                    this.$store.dispatch(DELETE_SOURCE, this.deletableObject.payload);
+                    this.closeConfirmDialog();
+                }   
+            }
+            else 
+            {
+                if (await deleteProfile(this.deletableObject.payload))
+                {
+                    this.$store.dispatch(DELETE_ACCESS_PROFILE, this.deletableObject.payload);
+                    this.closeConfirmDialog();
+                } 
+            }
+        },
+        closeConfirmDialog()
+        {
+            this.deletableObject = null;
+            this.confirmDialog = false;
         }
     }
 });
