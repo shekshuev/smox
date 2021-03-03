@@ -32,9 +32,6 @@
                             <v-toolbar-title>Задания</v-toolbar-title>
                             <v-spacer></v-spacer>
                             <v-dialog id="newTaskDialog" v-model="dialog" max-width="600px" persistent>
-                                <template v-slot:activator="{ on }">
-                                    <v-btn color="primary" dark class="mb-2" v-on="on">Новое</v-btn>
-                                </template>
                                 <v-card>
                                     <v-card-title>
                                         <span class="headline">Новый источник</span>
@@ -92,6 +89,9 @@
                 </v-data-table>
             </v-col>
         </v-row>
+        <v-btn v-on:click="dialog=true" color="primary" fab fixed bottom right>
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
         <v-dialog v-model="confirmDialog" max-width="500" persistent>
             <v-card>
                 <v-card-title>{{ confirmDialogText }}</v-card-title>

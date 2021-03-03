@@ -5,11 +5,9 @@ import { ADD_ACCESS_PROFILE, DELETE_ACCESS_PROFILE } from "src/store/modules/acc
 import { createSource, searchSource, deleteSource } from "src/api/source";
 import { ADD_SOURCE, DELETE_SOURCE } from "src/store/modules/source/mutation_types";
 import { SET_APPEARANCE } from "src/store/modules/settings/mutation_types";
-import sourceCard from "src/components/source/sourcecard.vue";
 
 export default Vue.component("settings",
 {
-    components: { sourceCard },
     data: function()
     {
         return {
@@ -79,6 +77,7 @@ export default Vue.component("settings",
                     this.name = ""
                     this.accessToken = ""
                     this.accessProfileDialog = false;
+                    this.$refs.accessProfileForm.reset();
                 }
             }
         },

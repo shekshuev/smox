@@ -3,7 +3,7 @@
         <v-container>
             <v-row>
                 <v-col sm="3">
-                    <sourceCard :source="taskSource.source"></sourceCard>
+                    <!--<sourceCard :source="taskSource.source"></sourceCard>-->
                 </v-col>
                 <v-col>
                     <v-card-text>Всего загружено: {{ taskSource.totalObjectsDownloaded }}</v-card-text>
