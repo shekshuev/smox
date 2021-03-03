@@ -2,11 +2,9 @@ import Vue from "vue";
 import { mapState } from "vuex";
 import { addTask, deleteTask, stopTask } from "src/api/task";
 import { ADD_TASK, DELETE_TASK, UPDATE_TASK } from "src/store/modules/task/mutation_types";
-import taskSourceCard from "./tasksourcecard.vue";
 
 export default Vue.component("tasks",
 {
-    components: { taskSourceCard },
     data: function()
     {
         return {
@@ -18,45 +16,10 @@ export default Vue.component("tasks",
             dialog: false,
             selectedAccessProfile: null,
             selectedSources: [],
-            headers:
-            [
-                {
-                    text: "В процессе",
-                    align: "center",
-                    sortable: "true",
-                    value: "isFinished"
-                },
-                {
-                    text: "Дата и время начала",
-                    align: "start",
-                    sortable: "false",
-                    value: "beginDate"
-                },
-                {
-                    text: "Дата и время окончания",
-                    align: "start",
-                    sortable: "false",
-                    value: "endDate"
-                },
-                {
-                    text: "Запросов к API",
-                    align: "start",
-                    sortable: "false",
-                    value: "requests_count"
-                },
-                {
-                    text: "Ошибка",
-                    align: "start",
-                    sortable: "false",
-                    value: "is_error"
-                },
-                {
-                    text: "Действия",
-                    align: "start",
-                    sortable: "false",
-                    value: "action"
-                }
-            ]
+            rules: {
+                accessProfile: [(v) => !!v || "Выберите профиль доступа!"],
+                sources: [(v) => v.length > 0 || "Выберите хотя бы один источник!"]
+            }
         }
     },
     created: function()
@@ -91,13 +54,16 @@ export default Vue.component("tasks",
     {
         async addTask(accessProfile, sources)
         {
-            let result = await addTask(accessProfile, sources);
-            if (result != null)
+            if (this.selectedAccessProfile != null && this.selectedSources.length != 0)
             {
-                this.$store.dispatch(ADD_TASK, result);
-                this.selectedAccessProfile = null;
-                this.selectedSources = [];
-                this.closeDialog();
+                let result = await addTask(accessProfile, sources);
+                if (result != null)
+                {
+                    this.$store.dispatch(ADD_TASK, result);
+                    this.selectedAccessProfile = null;
+                    this.selectedSources = [];
+                    this.closeDialog();
+                }
             }
         },
         async deleteTask(task)

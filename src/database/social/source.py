@@ -21,7 +21,7 @@ class SourceSchema(SQLAlchemyAutoSchema):
         model = SourceModel
         include_relationships = True
         load_instance = True
-
+         
 class SourceSchemaNoRel(SQLAlchemyAutoSchema):
     class Meta:
         model = SourceModel

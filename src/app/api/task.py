@@ -15,7 +15,7 @@ task_route = f"/api/v{API_VERSION}/task"
 @api.route(task_route, methods=["GET"])
 def read_task():
     if not "id" in request.args:
-        tasks = [task.to_dict() for task in TaskModel.query.all()]
+        tasks = [task.to_dict(True) for task in TaskModel.query.all()]
         return success({ "tasks": tasks })
     id = request.args.get("id", 0, type=int)
     if id <= 0:
@@ -77,6 +77,8 @@ def delete_task():
         return error({ "message": f"Wrong id = { request.args.get('id')}" })
     task = TaskModel.query.get(id)
     if task:
+        for ts in task.task_sources:
+            db.session.delete(ts)
         db.session.delete(task)
         db.session.commit()
         return success({"id": id})

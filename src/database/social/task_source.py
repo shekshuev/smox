@@ -1,10 +1,13 @@
 from database import db
+from marshmallow import fields
 from sqlalchemy import Index
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from database.social.source import SourceModel, SourceSchema
 
 class TaskSourceModel(db.Model):
     __tablename__ = "task_source"
     source_id = db.Column(db.Integer, db.ForeignKey("source.id", ondelete="RESTRICT"), nullable=False, primary_key=True)
+    source = db.relationship(SourceModel)
     task_id = db.Column(db.Integer, db.ForeignKey("task.id", ondelete="CASCADE"), nullable=False, primary_key=True)
     total_objects_downloaded = db.Column(db.Integer, nullable=False, default=0)
     offset = db.Column(db.Integer, nullable=False, default=0)
@@ -21,3 +24,4 @@ class TaskSourceSchema(SQLAlchemyAutoSchema):
         model = TaskSourceModel
         load_instance = True
         include_fk = True
+    source = fields.Nested(SourceSchema)

@@ -16,7 +16,7 @@ import AnalyticsComponent from "src/components/analytics/analytics.vue";
 const router = new VueRouter({
     mode: "history",
     routes: [
-        { path: "/", component: DashboardComponent },
+        { path: "/", component: DashboardComponent }, 
         { path: "/settings", component: SettingsComponent },
         { path: "/tasks", component: TaskComponent },
         { path: "/posts", component: PostComponent },
