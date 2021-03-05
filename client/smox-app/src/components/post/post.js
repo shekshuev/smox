@@ -1,21 +1,26 @@
 import Vue from "vue";
 import { mapState } from "vuex";
-import { getPosts, filterPosts } from "src/api/post";
+import { getPosts } from "src/api/post";
 import postCard from "./postcard.vue";
+import InfiniteLoading from 'vue-infinite-loading';
+
 //import { SET_OPTIONS, SET_START_DATE, SET_END_DATE } from "src/store/modules/post/mutation_types";
 
 export default Vue.component("posts",
 {
-    components: { postCard },
+    components: { postCard, InfiniteLoading },
     data: function()
     {
         return {
-            loading: true,
+            completed: false,
             totalPosts: 0,
             posts: [],
             modal: false,
             dates: [ ],
-            target: null
+            target: null,
+            count: 10,
+            page: 0,
+            loading: false
         }
     },
     computed: {
@@ -35,40 +40,37 @@ export default Vue.component("posts",
             targets: state => state.target.targets
         })
     },
-    mounted: async function()
-    {
-        await this.loadPosts()
-    },
     methods: 
     {
-        loadPosts: async function()
+        applyFilter: function()
         {
-            this.loading = true;
-            let result = await getPosts();
-            if (result)
-            {
-                this.posts = result.posts;
-                this.loading = false;
-            }
-        }, 
-        applyFilter: async function()
-        {
-            if (this.target != null)
-            {
-                this.loading = true;
-                let result = await filterPosts(this.target.id);
-                if (result)
-                {
-                    this.posts = result.posts;
-                    this.loading = false;
-                }
-            }
+            this.$refs.inf.stateChanger.reset();
+            this.page = 0;
+            this.posts = []
             
         },
-        clearFilter: async function()
+        clearFilter: function()
         {
             this.target = null;
-            await this.loadPosts();
+            this.page = 0;
+            this.$refs.inf.stateChanger.reset();
+            this.posts = [];
+        },
+        infiniteHandler: async function(state)
+        {
+            let result = await getPosts(this.count, this.page * this.count, this.target == null ? 0 : this.target.id);
+            if (result)
+            {
+                console.log(this.page)
+                if (result.posts.length == 0)
+                    state.complete();
+                else 
+                {
+                    this.posts = this.posts.concat(result.posts);
+                    this.page ++;
+                    state.loaded();
+                }
+            }
         }
     }
 });
