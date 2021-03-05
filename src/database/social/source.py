@@ -1,5 +1,6 @@
 from database import db
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import fields
 
 class SourceModel(db.Model):
     __tablename__ = "source"
@@ -21,7 +22,8 @@ class SourceSchema(SQLAlchemyAutoSchema):
         model = SourceModel
         include_relationships = True
         load_instance = True
-         
+    posts_count = fields.Function(lambda s: len(s.posts))
+
 class SourceSchemaNoRel(SQLAlchemyAutoSchema):
     class Meta:
         model = SourceModel
