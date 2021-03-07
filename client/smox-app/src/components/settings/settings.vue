@@ -45,6 +45,41 @@
                 </v-list-item>
             </v-list>
         </v-card>
+        <v-card class="mb-3">
+            <v-list subheader rounded>
+                <v-subheader>Настройка подключения к БД</v-subheader>
+                <v-list-group>
+                    <template v-slot:activator>
+                        <v-list-item-title>MySQL</v-list-item-title>
+                    </template>
+                    <v-form ref="settings">
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-row>
+                                    <v-col cols="12" sm="3">
+                                        <v-text-field label="Хост" v-model="dbHost"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="3">
+                                        <v-text-field label="Имя базы данных" v-model="dbName"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="3">
+                                        <v-text-field label="Логин" v-model="dbLogin"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="3">
+                                        <v-text-field label="Пароль" v-model="dbPassword" :type="showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-form>
+                    <v-list-item link v-on:click="updateDbConnection">
+                        <v-list-item-content class="list-item-content-center">
+                            <v-list-item-title class="primary--text">Сохранить изменения</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-group>
+            </v-list>
+        </v-card>
         <v-card>
             <v-list subheader rounded>
                 <v-subheader>Внешний вид</v-subheader>

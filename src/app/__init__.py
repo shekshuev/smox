@@ -12,6 +12,7 @@ from app.api.source import api as source_api
 from app.api.post import api as post_api
 from app.api.task import api as task_api
 from app.api.target import api as target_api
+from app.api.settings import api as settings_api
 from auth.api import api as auth_api
 from app.views import views as app_views
 from auth.views import views as auth_views
@@ -32,6 +33,7 @@ app.register_blueprint(post_api)
 app.register_blueprint(task_api)
 app.register_blueprint(auth_api)
 app.register_blueprint(target_api)
+app.register_blueprint(settings_api)
 app.register_blueprint(app_views)
 app.register_blueprint(auth_views)
 

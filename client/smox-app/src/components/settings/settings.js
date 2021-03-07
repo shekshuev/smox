@@ -4,7 +4,8 @@ import { addProfile, deleteProfile } from "src/api/access_profile";
 import { ADD_ACCESS_PROFILE, DELETE_ACCESS_PROFILE } from "src/store/modules/access_profile/mutation_types";
 import { createSource, searchSource, deleteSource } from "src/api/source";
 import { ADD_SOURCE, DELETE_SOURCE } from "src/store/modules/source/mutation_types";
-import { SET_APPEARANCE } from "src/store/modules/settings/mutation_types";
+import { SET_APPEARANCE , UPDATE_DATABASE_CONNECTION} from "src/store/modules/settings/mutation_types";
+import { updateDatatbaseConnection } from "src/api/settings";
 
 export default Vue.component("settings",
 {
@@ -26,13 +27,15 @@ export default Vue.component("settings",
             ],
             accessToken: "",
             confirmDialog: false,
-            deletableObject: null
+            deletableObject: null,
+            showPassword: false
         }
     },
     computed: {
         ...mapState({
             sources: state => state.source.sources,
             accessProfiles: state => state.accessProfile.accessProfiles,
+            db: state => state.settings.db
         }),
         dark_mode: 
         {
@@ -46,6 +49,58 @@ export default Vue.component("settings",
                 let appearance = Object.assign({}, this.$store.state.settings.appearance)
                 appearance.dark_mode = !this.dark_mode
                 this.$store.dispatch(SET_APPEARANCE, appearance)
+            }
+        },
+        dbHost: 
+        {
+            get()
+            {
+                return this.$store.state.settings.db.host
+            },
+            set(newVal)
+            {
+                let db = Object.assign({}, this.$store.state.settings.db)
+                db.host = newVal
+                this.$store.dispatch(UPDATE_DATABASE_CONNECTION, db)
+            }
+        },
+        dbName: 
+        {
+            get()
+            {
+                return this.$store.state.settings.db.name
+            },
+            set(newVal)
+            {
+                let db = Object.assign({}, this.$store.state.settings.db)
+                db.name = newVal
+                this.$store.dispatch(UPDATE_DATABASE_CONNECTION, db)
+            }
+        },
+        dbLogin: 
+        {
+            get()
+            {
+                return this.$store.state.settings.db.login
+            },
+            set(newVal)
+            {
+                let db = Object.assign({}, this.$store.state.settings.db)
+                db.login = newVal
+                this.$store.dispatch(UPDATE_DATABASE_CONNECTION, db)
+            }
+        },
+        dbPassword: 
+        {
+            get()
+            {
+                return this.$store.state.settings.db.password
+            },
+            set(newVal)
+            {
+                let db = Object.assign({}, this.$store.state.settings.db)
+                db.password = newVal
+                this.$store.dispatch(UPDATE_DATABASE_CONNECTION, db)
             }
         }
     },
@@ -140,6 +195,13 @@ export default Vue.component("settings",
         {
             this.deletableObject = null;
             this.confirmDialog = false;
+        },
+        async updateDbConnection()
+        {
+            if (await updateDatatbaseConnection(this.db))
+            {
+                console.log("fuck yeah!")
+            }
         }
     }
 });
