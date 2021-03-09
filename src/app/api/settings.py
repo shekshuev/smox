@@ -15,7 +15,7 @@ def read_settings():
     if not db:
         return success({
             "db": {
-                "host": "localhost", 
+                "host": "", 
                 "login": "", 
                 "name": "", 
                 "password": ""
