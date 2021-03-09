@@ -1,56 +1,66 @@
-from database.social.models import *
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session
 import vk
 import datetime
+from app.config import load_database_settings
+from database.social.log import LogModel, LogType
+from database.social.task import TaskModel
+from database.social.post import PostModel
+from database.social.post_attachment import AttachmentType, PostAttachmentModel
+from database.social.post_timestamp import PostTimestampModel
+from sqlalchemy import and_
 
 VK_API_VERSION = 5.95
+
+engine = create_engine(load_database_settings(), echo=True)
+session = scoped_session(sessionmaker(bind=engine))
 
 def log(message, type=LogType.info, db=True):
     date = datetime.datetime.now()
     if db:
-        LogModel.create(**{
-                        "message": message,
-                        "datetime": date,
-                        "type": type
-                    })
-    print(f"{'Error' if type == LogType.error else 'Info'} on {date}: {message}")
+        log = LogModel(message=message, datetime=date, type=int(type))
+        session.add(log)
+        session.commit()
+    print(f"{'Error' if type == LogType.error else 'Info' } on {date}: {message}")
 
 
-if TaskModel.select().count() == 0:
+if session.query(TaskModel).count() == 0:
     log("No active tasks", db=False)
-for task in TaskModel.select().iterator():
-    session = vk.Session(access_token=task.access_profile.access_token)
-    vk_api = vk.API(session, v=VK_API_VERSION)
+for task in session.query(TaskModel).all():
+    vk_session = vk.Session(access_token=task.access_profile.access_token)
+    vk_api = vk.API(vk_session, v=VK_API_VERSION)
     for task_source in task.task_sources:
         max = 100
         posts_count = vk_api.wall.get(count=1, owner_id=task_source.source.source_id)["count"]
         if task_source.begin_count == 0:
             task_source.begin_count = posts_count
-            task_source.save()
             task.requests_count += 1
-            task.save()
+            session.commit()
             log(f"Source {task_source.source.name}: updated posts count {posts_count}")
             continue
         task_source.count = posts_count - task_source.begin_count
-        task_source.save()
+        session.commit()
         count = task_source.count if task_source.count < max else max
         if count == 0:
             task.requests_count += 1
-            task.save()
+            session.commit()
             log(f"Source {task_source.source.name}: nothing to download")
         downloaded = 0
         wallposts = vk_api.wall.get(count=count, owner_id=task_source.source.source_id, extended=True, fields="all")
         for wallpost in wallposts["items"]:
-            same = PostModel.select().where((PostModel.post_id==wallpost["id"]) & (PostModel.owner_id==wallpost["owner_id"]) & (PostModel.from_id==wallpost["from_id"]))
-            if not same.exists():    
-                post = PostModel.create(**
-                {
-                    "post_id": wallpost["id"],
-                    "owner_id": wallpost["owner_id"],
-                    "from_id": wallpost["from_id"],
-                    "source": task_source.source,
-                    "posted_date": datetime.datetime.fromtimestamp(wallpost["date"]),
-                    "text": wallpost["text"]
-                })
+            same = session.query(PostModel).filter(and_(PostModel.post_id==wallpost["id"], PostModel.owner_id==wallpost["owner_id"], PostModel.from_id==wallpost["from_id"])).first()
+            if not same:    
+                post = PostModel(
+                    post_id=wallpost["id"],
+                    owner_id=wallpost["owner_id"],
+                    from_id=wallpost["from_id"],
+                    source=task_source.source,
+                    created_at=datetime.datetime.fromtimestamp(wallpost["date"]),
+                    text=wallpost["text"]
+                )
+                session.add(post)
+                session.commit()
                 if "attachments" in wallpost:
                     for attachment in wallpost["attachments"]:
                         type = AttachmentType.undefined
@@ -114,40 +124,40 @@ for task in TaskModel.select().iterator():
                                 title = link["title"] if "title" in link else ""
                                 text = link["description"] if "description" in link else ""
                                 url = link["url"] if "url" in link else ""
-                        PostAttachmentModel.create(**
-                        {
-                            "post": post,
-                            "type": type,
-                            "text": text,
-                            "title": title,
-                            "url": url
-                        })
-                PostTimestampModel.create(**
-                {
-                    "downloaded_date": datetime.datetime.now(),
-                    "likes_count": wallpost["likes"]["count"] if "likes" in wallpost else 0,
-                    "reposts_count": wallpost["reposts"]["count"] if "reposts" in wallpost else 0,
-                    "views_count": wallpost["views"]["count"] if "views" in wallpost else 0,
-                    "comments_count": wallpost["comments"]["count"] if "comments" in wallpost else 0,
-                    "post": post
-                })
+                        pa = PostAttachmentModel(
+                            post=post,
+                            type=int(type),
+                            text=text,
+                            title=title,
+                            url=url
+                        )
+                        session.add(pa)
+                        session.commit()
+                pts = PostTimestampModel(
+                    created_at=datetime.datetime.now(),
+                    likes_count=wallpost["likes"]["count"] if "likes" in wallpost else 0,
+                    reposts_count=wallpost["reposts"]["count"] if "reposts" in wallpost else 0,
+                    views_count=wallpost["views"]["count"] if "views" in wallpost else 0,
+                    comments_count=wallpost["comments"]["count"] if "comments" in wallpost else 0,
+                    post=post
+                )
+                session.add(pts)
+                session.commit()
                 log(f"Source {task_source.source.name}: added new post")
                 downloaded += 1
             else:
-                s = same.get()
-                PostTimestampModel.create(**
-                {
-                    "downloaded_date": datetime.datetime.now(),
-                    "likes_count": wallpost["likes"]["count"] if "likes" in wallpost else 0,
-                    "reposts_count": wallpost["reposts"]["count"] if "reposts" in wallpost else 0,
-                    "views_count": wallpost["views"]["count"] if "views" in wallpost else 0,
-                    "comments_count": wallpost["comments"]["count"] if "comments" in wallpost else 0,
-                    "post": same.get()
-                })
-                log(f"Post {same.get().id}: timestamps were updated")
+                pts = PostTimestampModel(
+                    created_at=datetime.datetime.now(),
+                    likes_count=wallpost["likes"]["count"] if "likes" in wallpost else 0,
+                    reposts_count=wallpost["reposts"]["count"] if "reposts" in wallpost else 0,
+                    views_count=wallpost["views"]["count"] if "views" in wallpost else 0,
+                    comments_count=wallpost["comments"]["count"] if "comments" in wallpost else 0,
+                    post=same
+                )
+                session.add(pts)
+                session.commit()
+                log(f"Post {same.id}: timestamps were updated")
         task_source.total_objects_downloaded += downloaded
-        task_source.save()
         task.requests_count += 2
-        task.save()
+        session.commit()
     log(f"VK data downloaded in task {task.id}")
-    

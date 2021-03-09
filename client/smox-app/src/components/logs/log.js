@@ -21,10 +21,10 @@ export default Vue.component("logcomponent",
                     value: "message"
                 },
                 {
-                    text: "Date",
+                    text: "Datetime",
                     align: "start",
                     sortable: "false",
-                    value: "date"
+                    value: "datetime"
                 },
                 {
                     text: "Type",
@@ -46,7 +46,7 @@ export default Vue.component("logcomponent",
         logs: function(newList)
         {
             if (newList)
-                newList.map(log => log.date = new Date(log.date))
+                newList.map(log => log.datetime = new Date(log.datetime))
         }
     },
     methods: 

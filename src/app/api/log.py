@@ -13,6 +13,6 @@ def read_log():
     page = request.args.get("page", 1, type=int)
     count = request.args.get("count", 10, type=int)
     return success({ 
-        "logs": [log.to_dict() for log in LogModel.query.offset((page - 1) * count).limit(count)],
+        "logs": [log.to_dict() for log in LogModel.query.order_by(LogModel.datetime.desc()).offset((page - 1) * count).limit(count)],
         "count": LogModel.query.count()
     })
