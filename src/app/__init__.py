@@ -16,10 +16,9 @@ from app.api.settings import api as settings_api
 from auth.api import api as auth_api
 from app.views import views as app_views
 from auth.views import views as auth_views
-import database
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="", static_folder="templates/smox-app")
 app.config.from_object(Config)
 jwt = JWTManager(app)
 CORS(app)
