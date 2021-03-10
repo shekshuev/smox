@@ -1,1 +1,1 @@
-{"db": {"host": "35.222.202.42", "login": "smox", "name": "smox", "password": "Qwerty123!"}}
+{"db": {"host": "35.222.202.42:3306", "login": "smox", "name": "smox", "password": "Qwerty123!"}}

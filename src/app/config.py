@@ -3,7 +3,7 @@ import pickledb
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 def load_database_settings():
-    settings = pickledb.load("settings.json", True, sig=False)
+    settings = pickledb.load(os.path.join(basedir, "settings.json"), True, sig=False)
     db = settings.get("db")
     if not db:
         return ""

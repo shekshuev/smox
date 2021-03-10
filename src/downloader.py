@@ -13,7 +13,7 @@ from sqlalchemy import and_
 
 VK_API_VERSION = 5.95
 
-engine = create_engine(load_database_settings(), echo=True)
+engine = create_engine(f"{load_database_settings()}?charset=utf8mb4", echo=True)
 session = scoped_session(sessionmaker(bind=engine))
 
 def log(message, type=LogType.info, db=True):
