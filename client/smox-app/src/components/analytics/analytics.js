@@ -10,6 +10,8 @@ export default Vue.component("analytics",
     data: function()
     {
         return {
+            snackbar: false,
+            error: "",
             dialog: false,
             keywords: [],
             keyword: "",
@@ -41,11 +43,18 @@ export default Vue.component("analytics",
             if (this.keywords.length == 0)
                 return;
             let result = await createTarget(this.title, this.keywords.join("|"), this.beginDate, this.endDate);
-            if (result)
+            if (result.success)
             {
-                this.$store.dispatch(CREATE_TARGET, result);
+                this.$store.dispatch(CREATE_TARGET, result.response.target);
                 this.dialog = false;
-                this.clearData()
+                this.clearData();
+            }
+            else 
+            {
+                this.dialog = false;
+                this.clearData();
+                this.error = result.response.message;
+                this.snackbar = true;
             }
         },
         async dropTarget(target)

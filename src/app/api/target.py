@@ -47,8 +47,10 @@ def create_target():
     end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
     try:
         keywords = keywords_str.split("|")
-        posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords), cast(PostModel.created_at, Date) >= begin_date, cast(PostModel.created_at, Date) <= end_date)
-        target = TargetModel(title=title, keywords=keywords_str, begin_date=begin_date, end_date=end_date, posts=posts.all(), result=0, reliability=0)
+        posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords), cast(PostModel.created_at, Date) >= begin_date, cast(PostModel.created_at, Date) <= end_date).all()
+        if len(posts) == 0:
+            return error({"message": "No match found!"})
+        target = TargetModel(title=title, keywords=keywords_str, begin_date=begin_date, end_date=end_date, posts=posts, result=0, reliability=0)
         xgb = XGBModel()
         result = xgb.predict(target.to_dataframe())
         for _, row in result["posts"].iterrows():

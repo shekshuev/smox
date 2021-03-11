@@ -13,20 +13,22 @@ export async function readTargets()
 
 export async function createTarget(title, keywords, beginDate, endDate)
 {
-    let response = await axios.post(url, null, {
-        params: {
-            title: title,
-            keywords: keywords,
-            begin_date: beginDate,
-            end_date: endDate
-        }
-    });
-    if (response.status == 200)
-        return response.data.response.target;
-    else 
+    try 
     {
-        console.log(response.data)
-        return null;
+        let response = await axios.post(url, null, {
+            params: {
+                title: title,
+                keywords: keywords,
+                begin_date: beginDate,
+                end_date: endDate
+            }
+        });
+        if (response.status == 200)
+            return response.data;
+    }
+    catch (error)
+    {
+        return error.response.data;
     }
 }
 
