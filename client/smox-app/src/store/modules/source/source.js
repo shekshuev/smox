@@ -14,7 +14,6 @@ const actions = {
         let sources = await getSources();
         if (sources != null)
             context.commit(LOAD_SOURCES, sources);
-
     },
     [ADD_SOURCE] (context, source)
     {

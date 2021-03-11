@@ -14,7 +14,6 @@ const actions = {
         let profiles = await getProfiles();
         if (profiles != null)
             context.commit(LOAD_ACCESS_PROFILES, profiles);
-
     },
     [ADD_ACCESS_PROFILE] (context, profile)
     {
