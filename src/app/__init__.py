@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from database import db
-from app.config import Config
+from app.config import Config, DevelompentConfig
 from app.api.access_profile import api as access_profile_api
 from app.api.source import api as source_api
 from app.api.post import api as post_api
@@ -18,7 +18,10 @@ from auth.views import views as auth_views
 
 
 app = Flask(__name__, static_url_path="", static_folder="templates/smox-app")
-app.config.from_object(Config)
+if app.config["ENV"] == "development":
+    app.config.from_object(DevelompentConfig)
+else:
+    app.config.from_object(Config)
 jwt = JWTManager(app)
 CORS(app)
 db.init_app(app)
