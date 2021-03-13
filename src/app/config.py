@@ -15,3 +15,4 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = load_database_settings()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = "Fuck them all!"
+    LOG_FILE = os.path.join(basedir, "download.log")

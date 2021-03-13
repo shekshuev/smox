@@ -13,7 +13,6 @@ export default Vue.component("dashboard",
     },
     mounted: function()
     {
-        console.log(this.sources.map((s) => { return s }))
         let ctx = this.$refs.postcountchart.getContext('2d');
         new Chart(ctx, 
         {

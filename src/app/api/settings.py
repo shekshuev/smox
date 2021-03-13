@@ -1,5 +1,4 @@
 from flask import request, Blueprint
-from database.social.log import LogModel
 from common.api_extensions import success, error
 import pickledb
 from app.api.version import API_VERSION

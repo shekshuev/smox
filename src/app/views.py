@@ -8,6 +8,5 @@ views = Blueprint("app_views", __name__)
 @views.route("/posts")
 @views.route("/tasks")
 @views.route("/settings")
-@views.route("/logs")
 def index():
     return render_template("smox-app/index.html")

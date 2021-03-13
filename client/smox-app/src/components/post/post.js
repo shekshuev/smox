@@ -61,7 +61,6 @@ export default Vue.component("posts",
             let result = await getPosts(this.count, this.page * this.count, this.target == null ? 0 : this.target.id);
             if (result)
             {
-                console.log(this.page)
                 if (result.posts.length == 0)
                     state.complete();
                 else 

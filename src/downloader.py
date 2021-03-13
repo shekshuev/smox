@@ -3,30 +3,24 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 import vk
 import datetime
-from app.config import load_database_settings
-from database.social.log import LogModel, LogType
+from app.config import Config
 from database.social.task import TaskModel
 from database.social.post import PostModel
 from database.social.post_attachment import AttachmentType, PostAttachmentModel
 from database.social.post_timestamp import PostTimestampModel
 from sqlalchemy import and_
+import logging
+
+logging.basicConfig(filename=Config.LOG_FILE, filemode="w", level=logging.INFO)
 
 VK_API_VERSION = 5.95
 
-engine = create_engine(f"{load_database_settings()}?charset=utf8mb4", echo=True)
+engine = create_engine(f"{Config.SQLALCHEMY_DATABASE_URI}?charset=utf8mb4", echo=False)
 session = scoped_session(sessionmaker(bind=engine))
-
-def log(message, type=LogType.info, db=True):
-    date = datetime.datetime.now()
-    if db:
-        log = LogModel(message=message, datetime=date, type=int(type))
-        session.add(log)
-        session.commit()
-    print(f"{'Error' if type == LogType.error else 'Info' } on {date}: {message}")
 
 
 if session.query(TaskModel).count() == 0:
-    log("No active tasks", db=False)
+    logging.info("No active tasks")
 for task in session.query(TaskModel).all():
     vk_session = vk.Session(access_token=task.access_profile.access_token)
     vk_api = vk.API(vk_session, v=VK_API_VERSION)
@@ -37,7 +31,7 @@ for task in session.query(TaskModel).all():
             task_source.begin_count = posts_count
             task.requests_count += 1
             session.commit()
-            log(f"Source {task_source.source.name}: updated posts count {posts_count}")
+            logging.info(f"Source {task_source.source.name}: updated posts count {posts_count}")
             continue
         task_source.count = posts_count - task_source.begin_count
         session.commit()
@@ -45,7 +39,7 @@ for task in session.query(TaskModel).all():
         if count == 0:
             task.requests_count += 1
             session.commit()
-            log(f"Source {task_source.source.name}: nothing to download")
+            logging.info(f"Source {task_source.source.name}: nothing to download")
         downloaded = 0
         wallposts = vk_api.wall.get(count=count, owner_id=task_source.source.source_id, extended=True, fields="all")
         for wallpost in wallposts["items"]:
@@ -143,7 +137,7 @@ for task in session.query(TaskModel).all():
                 )
                 session.add(pts)
                 session.commit()
-                log(f"Source {task_source.source.name}: added new post")
+                logging.info(f"Source {task_source.source.name}: added new post")
                 downloaded += 1
             else:
                 pts = PostTimestampModel(
@@ -156,8 +150,8 @@ for task in session.query(TaskModel).all():
                 )
                 session.add(pts)
                 session.commit()
-                log(f"Post {same.id}: timestamps were updated")
+                logging.info(f"Post {same.id}: timestamps were updated")
         task_source.total_objects_downloaded += downloaded
         task.requests_count += 2
         session.commit()
-    log(f"VK data downloaded in task {task.id}")
+    logging.info(f"VK data downloaded in task {task.id}")

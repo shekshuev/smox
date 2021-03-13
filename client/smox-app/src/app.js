@@ -28,10 +28,6 @@ export default Vue.component("app",
                 "/settings": {
                     "icon": "mdi-cog",
                     "title": "Настройки",
-                },
-                "/logs": {
-                    "icon": "mdi-notebook",
-                    "title": "Логи",
                 }
             }
         }
