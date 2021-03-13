@@ -9,12 +9,14 @@ from app.api.version import API_VERSION
 from sqlalchemy import and_, Date, cast
 from app.model import XGBModel
 import datetime
+from flask_jwt_extended import jwt_required
 
 api = Blueprint("target_api", __name__)
 
 target_route = f"/api/v{API_VERSION}/target"
 
 @api.route(target_route, methods=["GET"])
+@jwt_required
 def read_target():
     if not "id" in request.args:
         targets = [ {**target.to_dict(), **{"posts_count": len(target.posts) }} for target in TargetModel.query.all()]
@@ -30,6 +32,7 @@ def read_target():
             return error({"Message": f"Wrong id = {id}"})
 
 @api.route(target_route, methods=["POST"])
+@jwt_required
 def create_target():
     title = request.args.get("title")
     if not title or title == "":
@@ -64,6 +67,7 @@ def create_target():
         return error({"message": str(e)})
 
 @api.route(target_route, methods=["DELETE"])
+@jwt_required
 def delete_target():
     id = request.args.get("id", 0, type=int)
     if id <= 0:

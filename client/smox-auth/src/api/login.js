@@ -1,27 +1,42 @@
 import axios from "axios";
+import API_URL from "./base.js"
+
+const url = `${API_URL}login`;
 
 export async function login(username, password)  
 {
-    let form = new FormData();
-    form.append("username", username);
-    form.append("password", password);
     try
     {
-        await axios.post("/account/login", form);
-        window.location = "/";
+        let response = await axios.post(url, null, 
+        {
+            params: 
+            {
+                username: username,
+                password: password
+            }
+        });
+        if (response.status == 200)
+        {
+            return {
+                login: true,
+                token: response.data.response.token
+            };
+        }
+        else throw new Error("Somthing wrong happined");
     }
     catch (error)
     {
-
-        if (error.response != (null || undefined) && error.response.status == 401)
+        if (error.response.status == 401)
+        {
             return {
                 login: false,
-                error: error.response.data.error
-            }
+                error: error.response.data.response.message
+            };
+        }
         else     
             return {
                 login: false,
                 error: error.message
-            }
+            };
     }
 }

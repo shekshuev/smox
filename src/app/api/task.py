@@ -7,12 +7,14 @@ from database.social.task_source import TaskSourceModel
 from common.api_extensions import success, error
 from app.api.version import API_VERSION
 import datetime
+from flask_jwt_extended import jwt_required
 
 api = Blueprint("task_api", __name__)
 
 task_route = f"/api/v{API_VERSION}/task"
 
 @api.route(task_route, methods=["GET"])
+@jwt_required
 def read_task():
     if not "id" in request.args:
         tasks = [task.to_dict(True) for task in TaskModel.query.all()]
@@ -28,6 +30,7 @@ def read_task():
             return error({"Message": f"Wrong id = {id}"})
 
 @api.route(task_route, methods=["POST"])
+@jwt_required
 def create_task():
     access_profile_id = request.args.get("access_profile_id")
     if not access_profile_id:
@@ -55,6 +58,7 @@ def create_task():
         return success({ "task": task.to_dict(True) })
 
 @api.route(task_route, methods=["PUT"])
+@jwt_required
 def stop_task():
     print(request.args)
     id = request.args.get("id", 0, type=int)
@@ -69,8 +73,8 @@ def stop_task():
     else: 
         return error({ "message": f"Wrong id = { request.args.get('id')}" })
 
-    
 @api.route(task_route, methods=["DELETE"])
+@jwt_required
 def delete_task():
     id = request.args.get("id", 0, type=int)
     if id <= 0:

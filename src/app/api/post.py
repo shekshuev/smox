@@ -3,12 +3,14 @@ from database.social.post import PostModel
 from common.api_extensions import success, error
 from app.api.version import API_VERSION
 from database.social.target import TargetModel 
+from flask_jwt_extended import jwt_required
 
 api = Blueprint("post_api", __name__)
 
 post_route = f"/api/v{API_VERSION}/post"
 
 @api.route(post_route, methods=["GET"])
+@jwt_required
 def read_post():
     count = request.args.get("count", 100, type=int)
     offset = request.args.get("offset", 0, type=int)

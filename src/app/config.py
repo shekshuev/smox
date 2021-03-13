@@ -18,6 +18,12 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = "Fuck them all!"
     LOG_FILE = os.path.join(basedir, "download.log")
+    JWT_TOKEN_LOCATION = ['cookies']
+    #JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(seconds=1800)
+    JWT_COOKIE_SECURE = False
+    #JWT_REFRESH_TOKEN_EXPIRES = datetime.timedelta(days=15)
+    JWT_COOKIE_CSRF_PROTECT = True 
+    JWT_ACCESS_COOKIE_NAME = "access_token"
 
 class DevelompentConfig(Config):
     SQLALCHEMY_DATABASE_URI = load_database_settings(develop=True)

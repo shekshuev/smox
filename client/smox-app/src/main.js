@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Initial from "src/initial.vue";
 import vuetify from "./plugins/vuetify";
+import axios from "axios";
 
 import store from "./store";
 
@@ -11,6 +12,17 @@ import TaskComponent from "src/components/task/task.vue";
 import PostComponent from "src/components/post/post.vue";
 import NotFoundComponent from "src/components/notfound/notfound.vue";
 import AnalyticsComponent from "src/components/analytics/analytics.vue";
+
+axios.interceptors.response.use(null, error => 
+{
+    if (error.response.status == 401)
+    {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("username");
+        window.location.href = "/login";
+    }
+    throw error;
+});
 
 const router = new VueRouter({
     mode: "history",

@@ -3,12 +3,14 @@ from database import db
 from database.social.access_profile import AccessProfileModel
 from common.api_extensions import success, error
 from app.api.version import API_VERSION
+from flask_jwt_extended import jwt_required
 
 api = Blueprint("access_profile_api", __name__)
 
 access_profile_route = f"/api/v{API_VERSION}/access_profile"
 
 @api.route(access_profile_route, methods=["GET"])
+@jwt_required
 def read_access_profile():
     if not "id" in request.args:
         profiles = [profile.to_dict(rel=True) for profile in AccessProfileModel.query.all()]
@@ -24,6 +26,7 @@ def read_access_profile():
             return error({"Message": f"Wrong id = {id}"})
 
 @api.route(access_profile_route, methods=["POST"])
+@jwt_required
 def create_access_profile():
     name = request.args.get("name")
     if not name:
@@ -40,6 +43,7 @@ def create_access_profile():
         return error({"message": str(e)})
 
 @api.route(access_profile_route, methods=["PUT"])
+@jwt_required
 def update_access_profile():
     id = request.args.get("id")
     if not id:
@@ -63,6 +67,7 @@ def update_access_profile():
         return error({"message": str(e)})
 
 @api.route(access_profile_route, methods=["DELETE"])
+@jwt_required
 def delete_access_profile():
     id = request.args.get("id", 0, type=int)
     if id <= 0:
