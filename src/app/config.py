@@ -11,7 +11,7 @@ def load_database_settings(develop=False):
     if not db:
         return ""
     else:
-        return f"mysql://{db['login']}:{db['password']}@{db['host']}/{db['name']}"
+        return f"mysql://{db['login']}:{db['password']}@{db['host']}/{db['name']}?ssl_ca=~/.mysql/root.crt"
 
 class Config(object):
     SQLALCHEMY_DATABASE_URI = load_database_settings()
