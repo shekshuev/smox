@@ -17,7 +17,6 @@ from auth.api import api as auth_api
 from app.views import views as app_views
 from auth.views import views as auth_views
 
-
 app = Flask(__name__, static_url_path="", static_folder="templates/smox")
 if app.config["ENV"] == "development":
     app.config.from_object(DevelompentConfig)

@@ -4,14 +4,14 @@ import pickledb
 from app.api.version import API_VERSION
 import os
 from app.config import basedir
-from flask_jwt_extended import jwt_required
+from auth import jwt_required_user
 
 api = Blueprint("settings_api", __name__)
 
 settings_route = f"/api/v{API_VERSION}/settings"
 
 @api.route(settings_route, methods=["GET"])
-@jwt_required
+@jwt_required_user()
 def read_settings():
     settings = pickledb.load(os.path.join(basedir, "settings.json"), True, sig=False)
     db = settings.get("db")
@@ -27,7 +27,7 @@ def read_settings():
     return success({"db" : db})
 
 @api.route(settings_route, methods=["PUT"])
-@jwt_required
+@jwt_required_user()
 def update_settings():
     settings = pickledb.load(os.path.join(basedir, "settings.json"), True, sig=False)
     db = {

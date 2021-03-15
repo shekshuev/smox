@@ -4,14 +4,14 @@ from database.social.source import SourceModel
 from common.api_extensions import success, error
 from app.api.version import API_VERSION, VK_API_VERSION
 import vk
-from flask_jwt_extended import jwt_required
+from auth import jwt_required_user
 
 api = Blueprint("source_api", __name__)
 
 source_route = f"/api/v{API_VERSION}/source"
 
 @api.route(source_route, methods=["GET"])
-@jwt_required
+@jwt_required_user()
 def read_source():
     if "access_token" in request.args:
         access_token = request.args.get("access_token")
@@ -43,7 +43,7 @@ def read_source():
             return error({"Message": f"Wrong id = {id}"})
 
 @api.route(source_route, methods=["POST"])
-@jwt_required
+@jwt_required_user()
 def create_source():
     source_id = request.args.get("source_id")
     if not source_id:
@@ -58,7 +58,7 @@ def create_source():
     return success({ "source": source.to_dict() })
 
 @api.route(source_route, methods=["DELETE"])
-@jwt_required
+@jwt_required_user()
 def delete_source():
     id = request.args.get("id", 0, type=int)
     if id <= 0:
