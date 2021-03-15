@@ -28,7 +28,7 @@ jwt = JWTManager(app)
 def redirect_callback(jwt_payload):
     return redirect("/login")
 
-CORS(app)
+CORS(app, supports_credentials=True)
 db.init_app(app)
 migrate = Migrate(app, db)
 

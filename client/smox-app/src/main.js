@@ -13,16 +13,24 @@ import PostComponent from "src/components/post/post.vue";
 import NotFoundComponent from "src/components/notfound/notfound.vue";
 import AnalyticsComponent from "src/components/analytics/analytics.vue";
 
-axios.interceptors.response.use(null, error => 
-{
-    if (error.response.status == 401)
+axios.interceptors.request.use(
+    function(config) 
     {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("username");
-        window.location.href = "/login";
+      config.withCredentials = true;
+      return config;
+    },
+    function(error) 
+    {
+        if (error.response.status == 401)
+        {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("username");
+            window.location.href = "/login";
+        }
     }
-    throw error;
-});
+);
+
+axios.defaults.withCredentials = true
 
 const router = new VueRouter({
     mode: "history",
