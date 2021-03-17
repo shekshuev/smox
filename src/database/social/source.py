@@ -1,15 +1,16 @@
-from database import db
+from database import SocialModel
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
+from sqlalchemy import Column, Integer, Text, String
 
-class SourceModel(db.Model):
+class SourceModel(SocialModel):
     __tablename__ = "source"
-    id = db.Column(db.Integer, primary_key=True)
-    source_id = db.Column(db.Integer, nullable=False)
-    name = db.Column(db.String(150), nullable=False)
-    domain = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    photo = db.Column(db.Text, nullable=False)
+    id = Column(Integer, primary_key=True)
+    source_id = Column(Integer, nullable=False)
+    name = Column(String(150), nullable=False)
+    domain = Column(String(50), nullable=False)
+    description = Column(Text, nullable=False)
+    photo = Column(Text, nullable=False)
 
     def to_dict(self, rel=False):
         if rel:

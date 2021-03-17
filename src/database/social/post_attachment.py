@@ -1,6 +1,6 @@
-from database import db
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from database import SocialModel
 from enum import IntEnum
+from sqlalchemy import Column, Integer, Text, ForeignKey
 
 class AttachmentType(IntEnum):
     photo = 1
@@ -11,11 +11,11 @@ class AttachmentType(IntEnum):
     undefined = 0
 
 
-class PostAttachmentModel(db.Model):
+class PostAttachmentModel(SocialModel):
     __tablename__ = "post_attachment"
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey("post.id"), nullable=False)
-    type = db.Column(db.Integer, nullable=False, default=0)
-    title = db.Column(db.Text, nullable=False)
-    text = db.Column(db.Text, nullable=False)
-    url = db.Column(db.Text, nullable=False, default="")
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey("post.id", ondelete="RESTRICT", name="fk_post_id_post_attachment"), nullable=False)
+    type = Column(Integer, nullable=False, default=0)
+    title = Column(Text, nullable=False, default="untitled")
+    text = Column(Text, nullable=False, default="")
+    url = Column(Text, nullable=False, default="")

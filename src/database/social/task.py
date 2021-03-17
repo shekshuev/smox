@@ -1,23 +1,25 @@
-from database import db
+from database import SocialModel
 from marshmallow import fields
 from database.social.task_source import TaskSourceModel, TaskSourceSchema
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from database.social.source import SourceModel, SourceSchema
+from database.social.source import SourceModel
+from sqlalchemy import Column, Integer, Text, ForeignKey, DateTime, Boolean
+from sqlalchemy.orm import relationship, backref
 
-class TaskModel(db.Model):
+class TaskModel(SocialModel):
     __tablename__ = "task"
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.Text, nullable=False, default="Untitled")
-    is_finished = db.Column(db.Boolean, nullable=False, default=False)
-    begin_datetime = db.Column(db.DateTime, nullable=False)
-    end_datetime = db.Column(db.DateTime, nullable=True)
-    requests_count = db.Column(db.Integer, nullable=False, default=0)
-    access_profile_id = db.Column(db.Integer, db.ForeignKey("access_profile.id", ondelete="RESTRICT"), nullable=False)
-    is_error = db.Column(db.Boolean, nullable=False, default=False)
-    error = db.Column(db.Text, nullable=False, default="")
-    sources = db.relationship(SourceModel, secondary=lambda: TaskSourceModel.__table__, backref=db.backref('tasks', lazy=True))
-    task_sources = db.relationship(TaskSourceModel, backref="task", lazy=True)
-    
+    id = Column(Integer, primary_key=True)
+    title = Column(Text, nullable=False, default="Untitled")
+    is_finished = Column(Boolean, nullable=False, default=False)
+    begin_datetime = Column(DateTime, nullable=False)
+    end_datetime = Column(DateTime, nullable=True)
+    requests_count = Column(Integer, nullable=False, default=0)
+    access_profile_id = Column(Integer, ForeignKey("access_profile.id", ondelete="RESTRICT", name='fk_access_profile_id_task'), nullable=False)
+    is_error = Column(Boolean, nullable=False, default=False)
+    error = Column(Text, nullable=False, default="")
+    sources = relationship(SourceModel, secondary=lambda: TaskSourceModel.__table__, backref=backref('tasks', lazy=True))
+    task_sources = relationship(TaskSourceModel, backref="task", lazy=True)
+
     def to_dict(self, rel=False):
         if rel:
             return TaskSchema().dump(self)

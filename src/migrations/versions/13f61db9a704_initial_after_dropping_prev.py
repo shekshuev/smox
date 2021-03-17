@@ -1,8 +1,8 @@
-"""empty message
+"""initial after dropping prev
 
-Revision ID: 0ea7839a2324
+Revision ID: 13f61db9a704
 Revises: 
-Create Date: 2020-11-30 01:07:38.788761
+Create Date: 2021-03-17 20:32:28.428438
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0ea7839a2324'
+revision = '13f61db9a704'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,13 +24,6 @@ def upgrade():
     sa.Column('access_token', sa.String(length=100), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('log',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('message', sa.Text(), nullable=False),
-    sa.Column('datetime', sa.DateTime(), nullable=False),
-    sa.Column('type', sa.SmallInteger(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('source',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('source_id', sa.Integer(), nullable=False),
@@ -38,6 +31,16 @@ def upgrade():
     sa.Column('domain', sa.String(length=50), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
     sa.Column('photo', sa.Text(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('target',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('title', sa.Text(), nullable=False),
+    sa.Column('keywords', sa.Text(), nullable=False),
+    sa.Column('begin_date', sa.DateTime(), nullable=True),
+    sa.Column('end_date', sa.DateTime(), nullable=True),
+    sa.Column('result', sa.Float(), nullable=True),
+    sa.Column('reliability', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('post',
@@ -49,12 +52,14 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('text', sa.Text(), nullable=False),
     sa.Column('value', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['source_id'], ['source.id'], ),
+    sa.Column('fit_value', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['source_id'], ['source.id'], name='fk_source_id_post', ondelete='RESTRICT'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('unique_idx_post', 'post', ['post_id', 'owner_id', 'from_id'], unique=True)
     op.create_table('task',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('title', sa.Text(), nullable=False),
     sa.Column('is_finished', sa.Boolean(), nullable=False),
     sa.Column('begin_datetime', sa.DateTime(), nullable=False),
     sa.Column('end_datetime', sa.DateTime(), nullable=True),
@@ -62,7 +67,7 @@ def upgrade():
     sa.Column('access_profile_id', sa.Integer(), nullable=False),
     sa.Column('is_error', sa.Boolean(), nullable=False),
     sa.Column('error', sa.Text(), nullable=False),
-    sa.ForeignKeyConstraint(['access_profile_id'], ['access_profile.id'], ),
+    sa.ForeignKeyConstraint(['access_profile_id'], ['access_profile.id'], name='fk_access_profile_id_task', ondelete='RESTRICT'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('post_attachment',
@@ -72,7 +77,7 @@ def upgrade():
     sa.Column('title', sa.Text(), nullable=False),
     sa.Column('text', sa.Text(), nullable=False),
     sa.Column('url', sa.Text(), nullable=False),
-    sa.ForeignKeyConstraint(['post_id'], ['post.id'], ),
+    sa.ForeignKeyConstraint(['post_id'], ['post.id'], name='fk_post_id_post_attachment', ondelete='RESTRICT'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('post_timestamp',
@@ -82,10 +87,18 @@ def upgrade():
     sa.Column('reposts_count', sa.Integer(), nullable=False),
     sa.Column('views_count', sa.Integer(), nullable=False),
     sa.Column('comments_count', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['post_id'], ['post.id'], ),
+    sa.ForeignKeyConstraint(['post_id'], ['post.id'], name='fk_post_id_post_timestamp', ondelete='RESTRICT'),
     sa.PrimaryKeyConstraint('post_id', 'created_at')
     )
     op.create_index('pk_idx_post_timestamp', 'post_timestamp', ['post_id', 'created_at'], unique=True)
+    op.create_table('target_post',
+    sa.Column('post_id', sa.Integer(), nullable=False),
+    sa.Column('target_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['post_id'], ['post.id'], name='fk_post_id_target_post', ondelete='RESTRICT'),
+    sa.ForeignKeyConstraint(['target_id'], ['target.id'], name='fk_target_id_target_post', ondelete='RESTRICT'),
+    sa.PrimaryKeyConstraint('post_id', 'target_id')
+    )
+    op.create_index('pk_idx_target_post', 'target_post', ['post_id', 'target_id'], unique=True)
     op.create_table('task_source',
     sa.Column('source_id', sa.Integer(), nullable=False),
     sa.Column('task_id', sa.Integer(), nullable=False),
@@ -93,8 +106,8 @@ def upgrade():
     sa.Column('offset', sa.Integer(), nullable=False),
     sa.Column('count', sa.Integer(), nullable=False),
     sa.Column('begin_count', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['source_id'], ['source.id'], ),
-    sa.ForeignKeyConstraint(['task_id'], ['task.id'], ),
+    sa.ForeignKeyConstraint(['source_id'], ['source.id'], name='fk_source_id_task_source', ondelete='RESTRICT'),
+    sa.ForeignKeyConstraint(['task_id'], ['task.id'], name='fk_task_id_task_source', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('source_id', 'task_id')
     )
     op.create_index('pk_idx_task_source', 'task_source', ['source_id', 'task_id'], unique=True)
@@ -105,13 +118,15 @@ def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_index('pk_idx_task_source', table_name='task_source')
     op.drop_table('task_source')
+    op.drop_index('pk_idx_target_post', table_name='target_post')
+    op.drop_table('target_post')
     op.drop_index('pk_idx_post_timestamp', table_name='post_timestamp')
     op.drop_table('post_timestamp')
     op.drop_table('post_attachment')
     op.drop_table('task')
     op.drop_index('unique_idx_post', table_name='post')
     op.drop_table('post')
+    op.drop_table('target')
     op.drop_table('source')
-    op.drop_table('log')
     op.drop_table('access_profile')
     # ### end Alembic commands ###
