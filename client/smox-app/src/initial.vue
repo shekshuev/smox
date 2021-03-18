@@ -1,8 +1,16 @@
 <template>
-    <transition name="fade">
-        <LoadingScreen key=1 v-if="loading" :progress="progress"/>
-        <App key=2 v-else/>
-    </transition>
+    <div>
+        <transition name="fade">
+            <div key="2" v-if="!loading" >
+                <App />
+            </div>
+        </transition>
+        <transition name="fade">
+            <div key="1" v-if="loading">
+                <LoadingScreen :progress="progress"/>
+            </div>
+        </transition>
+    </div>
 </template>
 <script src="./initial.js"></script>
 <style>

@@ -5,6 +5,7 @@ import colors from 'vuetify/lib/util/colors'
 
 export default Vue.component("dashboard",
 {
+    title: "SMOX | Dashboard",
     data: function ()
     {
         return {

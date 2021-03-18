@@ -1,12 +1,14 @@
 import Vue from "vue";
 
+const logo = require("src/assets/logo.svg");
+
 export default Vue.component("app",
 {
     data: function()
     {
         return {
             progress: 0,
-            drawer: false,
+            drawer: null,
             menu: {
                 "/": {
                     "icon": "mdi-view-dashboard",
@@ -29,7 +31,11 @@ export default Vue.component("app",
                     "icon": "mdi-cog",
                     "title": "Настройки",
                 }
-            }
+            },
+            username: localStorage.getItem("username"),
+            role: localStorage.getItem("role"),
+            photo: localStorage.getItem("photo") == null ? logo : localStorage.getItem("photo"),
+            logo: require("src/assets/logo.svg")
         }
     },
     methods: 

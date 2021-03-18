@@ -9,6 +9,7 @@ import { updateDatatbaseConnection } from "src/api/settings";
 
 export default Vue.component("settings",
 {
+    title: "SMOX | Settings",
     data: function()
     {
         return {

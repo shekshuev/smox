@@ -6,6 +6,7 @@ import targetCard from "src/components/target/target.vue"
 
 export default Vue.component("analytics",
 {
+    title: "SMOX | Analytics",
     components: { targetCard },
     data: function()
     {

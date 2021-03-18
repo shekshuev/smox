@@ -1,1 +1,11 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.5 100"><defs><style>.cls-1{fill:#1697f6;}.cls-2{fill:#7bc6ff;}.cls-3{fill:#1867c0;}.cls-4{fill:#aeddff;}</style></defs><title>Artboard 46</title><polyline class="cls-1" points="43.75 0 23.31 0 43.75 48.32"/><polygon class="cls-2" points="43.75 62.5 43.75 100 0 14.58 22.92 14.58 43.75 62.5"/><polyline class="cls-3" points="43.75 0 64.19 0 43.75 48.32"/><polygon class="cls-4" points="64.58 14.58 87.5 14.58 43.75 100 43.75 62.5 64.58 14.58"/></svg>
+<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="134" cy="125.5" rx="88" ry="90.5" fill="#64B5F6" fill-opacity="0.5"/>
+<path d="M166.817 212.975C119.059 205.05 64.0308 181.572 44.0709 164.243C18.7089 142.225 23.6111 126.239 47.9215 101.1C68.6946 79.6198 101.732 52.4942 137.815 26.453C178.246 -2.72558 194.271 38.7584 201.199 117.673C204.426 154.429 215.472 221.049 166.817 212.975Z" fill="#42A5F5" fill-opacity="0.5"/>
+<path d="M141.022 223.106C105.781 216.04 54.644 155.874 42.4745 130.761C28.5178 101.961 47.3784 89.0564 57.8437 80.842C76.1504 66.473 145.21 29.7191 179.25 34.8157C213.55 39.9514 219.504 112.613 210.544 144.923C200.872 179.799 178.751 230.672 141.022 223.106Z" fill="url(#paint0_linear)" fill-opacity="0.6"/>
+<defs>
+<linearGradient id="paint0_linear" x1="81.5" y1="182.5" x2="209.787" y2="47.1676" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D32F2F"/>
+<stop offset="1" stop-color="#1976D2"/>
+</linearGradient>
+</defs>
+</svg>

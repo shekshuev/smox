@@ -5,6 +5,7 @@ import { ADD_TASK, DELETE_TASK, UPDATE_TASK } from "src/store/modules/task/mutat
 
 export default Vue.component("tasks",
 {
+    title: "SMOX | Tasks",
     data: function()
     {
         return {

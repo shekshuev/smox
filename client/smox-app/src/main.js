@@ -13,6 +13,8 @@ import PostComponent from "src/components/post/post.vue";
 import NotFoundComponent from "src/components/notfound/notfound.vue";
 import AnalyticsComponent from "src/components/analytics/analytics.vue";
 
+import titleMixin from "src/mixins/title.js";
+
 axios.interceptors.request.use(
     function(config) 
     {
@@ -46,8 +48,10 @@ const router = new VueRouter({
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
+Vue.mixin(titleMixin)
 
 new Vue({
+    title: "SMOX",
     el: "#app",
     vuetify,
     store,

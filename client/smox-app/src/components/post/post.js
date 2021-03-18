@@ -8,6 +8,7 @@ import InfiniteLoading from 'vue-infinite-loading';
 
 export default Vue.component("posts",
 {
+    title: "SMOX | Posts",
     components: { postCard, InfiniteLoading },
     data: function()
     {
