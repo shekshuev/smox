@@ -14,7 +14,7 @@ logging.basicConfig(filename=Config.LOG_FILE, filemode="w", level=logging.INFO)
 
 VK_API_VERSION = 5.95
 
-engine = create_engine(f"{Config.SQLALCHEMY_DATABASE_URI}?charset=utf8mb4", echo=False)
+engine = create_engine(f"{Config.SQLALCHEMY_DATABASE_URI}", echo=False)
 session = scoped_session(sessionmaker(bind=engine))
 
 
