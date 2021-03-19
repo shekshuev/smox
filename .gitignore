@@ -7,8 +7,7 @@ __pycache__/
 src/flask/smox
 src/app/static/smox-app
 src/app/static/smox-auth
-src/app/templates/smox-app
-src/app/templates/smox-auth
+src/app/templates
 
 .DS_Store
 .vscode/
