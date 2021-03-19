@@ -3,6 +3,8 @@ import vuetify from "./plugins/vuetify";
 import App from "./app.vue";
 import axios from "axios";
 
+import titleMixin from "src/mixins/title.js";
+
 axios.interceptors.response.use(null, error => 
 {
     if (error.response.status == 401)
@@ -13,6 +15,8 @@ axios.interceptors.response.use(null, error =>
     }
     throw error;
 });
+
+Vue.mixin(titleMixin);
 
 new Vue({
     el: "#app",

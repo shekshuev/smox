@@ -1,7 +1,7 @@
 <template>
     <v-card outlined :loading="loading" :disabled="loading">
         <v-card-text class="text-center">
-            <p class="display-1">SMOX</p>
+            <v-img :src="mainlogo" max-height="100" contain></v-img>
             <p class=" title">Вход</p>
             <v-icon size="120">mdi-account-circle</v-icon>
             <v-text-field label="Имя пользователя" name="login" v-model="username" prepend-icon="mdi-account" type="text"></v-text-field>

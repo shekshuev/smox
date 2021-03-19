@@ -12,7 +12,8 @@ export default Vue.component("loginComponent",
             password: "",
             loading: false,
             error: false,
-            errorMessage: ""
+            errorMessage: "",
+            mainlogo: require("src/assets/mainlogo.svg")
         }
     },
     methods: 
@@ -33,6 +34,7 @@ export default Vue.component("loginComponent",
                 let obj = jwt_decode(result.token);
                 axios.defaults.headers.Authorization = "Bearer " + result.token;
                 localStorage.setItem("username", obj.identity.username);
+                localStorage.setItem("role", obj.identity.role);
                 localStorage.setItem("token", result.token);
                 window.location.href = "/";
             }

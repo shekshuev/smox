@@ -23,12 +23,12 @@ module.exports = {
       chunkFilename: 'auth/auth.chunk.[hash].css',
     },
   },
-  chainWebpack: (config) => {
-    if (process.env.NODE_ENV === 'production') {
-        config.plugin('html').tap((opts) => {
-            opts[0].filename = './auth.html';
-            return opts;
-        });
+  pages: {
+    index: {
+      entry: 'src/main.js',
+      template: 'public/auth.html',
+      filename: 'auth.html',
+      title: 'SMOX Login'
     }
   }
 }
