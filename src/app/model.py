@@ -30,8 +30,8 @@ class XGBModel:
     # в строго возрастающем порядке, иначе не сработают сплайны
     def __prepare_data(self, groups):
         groups.sort(key=lambda g: len(g))
-        groups = [g for g in groups if len(g) >= 90]
-        groups = [group[1:97] for group in groups]
+        groups = [g for g in groups if len(g) >= 25]
+        groups = [group[1:25] for group in groups]
         for i in range(0, len(groups)):
             groups[i] = groups[i].fillna(0)
         for i in range(0, len(groups)):
@@ -42,9 +42,9 @@ class XGBModel:
         return groups
 
     def __convert_data(self, data):
-        #data["created_at"] = np.where(data["created_at"] == 0, data["downloaded_date"], data["posted_date"])
         data = data.groupby("id")
         groups = [data.get_group(x) for x in data.groups]
+        posts_count = len(groups)
         groups = self.__prepare_data(groups)
         if len(groups) == 0:
             return None
@@ -73,18 +73,29 @@ class XGBModel:
         converted = converted.rename(columns={ 0: "id" })
         scaler = StandardScaler()
         X = scaler.fit_transform(converted.drop(columns=["id"]))
-        return X, converted.drop(columns=range(1, len(converted.columns), 1))
+        return X, converted.drop(columns=range(1, len(converted.columns), 1)), posts_count
 
     def predict(self, data):
-        X, posts = self.__convert_data(data)
-        if X is None:
+        X, posts, posts_count = self.__convert_data(data)
+        if posts_count == 0 or X is None:
             return None
         X = xgb.DMatrix(X)
         model = xgb.Booster() 
         model.load_model(os.path.join(os.path.dirname(__file__), "trained_xgb.json"))
         y_pred = model.predict(X)
         posts["value"] = y_pred
+        unique, counts = np.unique(y_pred, return_counts=True)
+        results = dict(zip(unique, counts))
+        total = 0
+        pos = 0
+        for i in [0, 1]:
+            if i in results.keys():
+                total += results[i]
+                if i == 1:
+                    pos += results[i]
+        if total == 0:
+            return None
         return {
-            "value": np.count_nonzero(y_pred) / len(y_pred),
+            "value": pos / total,
             "posts": posts
         }

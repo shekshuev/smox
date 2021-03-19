@@ -53,6 +53,8 @@ def create_target():
         posts = PostModel.query.filter(and_(PostModel.text.ilike(f"%{word}%") for word in keywords), cast(PostModel.created_at, Date) >= begin_date, cast(PostModel.created_at, Date) <= end_date).all()
         if len(posts) == 0:
             return error({"message": "No match found!"})
+        for post in posts:
+            post.value = -1
         target = TargetModel(title=title, keywords=keywords_str, begin_date=begin_date, end_date=end_date, posts=posts, result=0, reliability=0)
         xgb = XGBModel()
         result = xgb.predict(target.to_dataframe())
@@ -64,6 +66,7 @@ def create_target():
         db.session.commit()
         return success({ "target": {**target.to_dict(), **{"posts_count": len(target.posts) }} })
     except Exception as e:
+        print(str(e))
         return error({"message": str(e)})
 
 @api.route(target_route, methods=["DELETE"])
