@@ -25,12 +25,14 @@ for task in session.query(TaskModel).all():
     vk_api = vk.API(vk_session, v=VK_API_VERSION)
     for task_source in task.task_sources:
         max = 100
-        posts_count = vk_api.wall.get(count=1, owner_id=task_source.source.source_id)["count"]
+        posts_count = vk_api.wall.get(
+            count=1, owner_id=task_source.source.source_id)["count"]
         if task_source.begin_count == 0:
             task_source.begin_count = posts_count
             task.requests_count += 1
             session.commit()
-            logging.info(f"Source {task_source.source.name}: updated posts count {posts_count}")
+            logging.info(
+                f"Source {task_source.source.name}: updated posts count {posts_count}")
             continue
         task_source.count = posts_count - task_source.begin_count
         session.commit()
@@ -38,18 +40,22 @@ for task in session.query(TaskModel).all():
         if count == 0:
             task.requests_count += 1
             session.commit()
-            logging.info(f"Source {task_source.source.name}: nothing to download")
+            logging.info(
+                f"Source {task_source.source.name}: nothing to download")
         downloaded = 0
-        wallposts = vk_api.wall.get(count=count, owner_id=task_source.source.source_id, extended=True, fields="all")
+        wallposts = vk_api.wall.get(
+            count=count, owner_id=task_source.source.source_id, extended=True, fields="all")
         for wallpost in wallposts["items"]:
-            same = session.query(PostModel).filter(and_(PostModel.post_id==wallpost["id"], PostModel.owner_id==wallpost["owner_id"], PostModel.from_id==wallpost["from_id"])).first()
-            if not same:    
+            same = session.query(PostModel).filter(and_(
+                PostModel.post_id == wallpost["id"], PostModel.owner_id == wallpost["owner_id"], PostModel.from_id == wallpost["from_id"])).first()
+            if not same:
                 post = PostModel(
                     post_id=wallpost["id"],
                     owner_id=wallpost["owner_id"],
                     from_id=wallpost["from_id"],
                     source=task_source.source,
-                    created_at=datetime.datetime.fromtimestamp(wallpost["date"]),
+                    created_at=datetime.datetime.fromtimestamp(
+                        wallpost["date"]),
                     text=wallpost["text"]
                 )
                 session.add(post)
@@ -136,7 +142,8 @@ for task in session.query(TaskModel).all():
                 )
                 session.add(pts)
                 session.commit()
-                logging.info(f"Source {task_source.source.name}: added new post")
+                logging.info(
+                    f"Source {task_source.source.name}: added new post")
                 downloaded += 1
             else:
                 pts = PostTimestampModel(
