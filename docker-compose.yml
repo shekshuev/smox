@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+    smox-postgres:
+        container_name: smox-postgres
+        image: postgres
+        restart: always
+        environment:
+            - POSTGRES_DB=smox
+            - POSTGRES_USER=smox
+            - POSTGRES_PASSWORD=smox
+        volumes:
+            - smox-postgres-data:/var/lib/postgresql/data
+
+    smox-pgadmin:
+        image: dpage/pgadmin4
+        container_name: smox-pgadmin
+        restart: always
+        depends_on:
+            - smox-postgres
+        ports:
+            - "9090:80"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@smox.tech
+            PGADMIN_DEFAULT_PASSWORD: smox
+        volumes:
+            - smox-pgadmin-data:/var/lib/pgadmin
+
+volumes:
+    smox-postgres-data:
+    smox-pgadmin-data:
