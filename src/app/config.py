@@ -1,6 +1,8 @@
+from dotenv import load_dotenv
 import os
 import pickledb
 basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv()
 
 
 def load_database_settings(develop=False):

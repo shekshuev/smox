@@ -9,6 +9,9 @@ from database.social.post_attachment import AttachmentType, PostAttachmentModel
 from database.social.post_timestamp import PostTimestampModel
 from sqlalchemy import and_
 import logging
+from dotenv import load_dotenv
+import time
+load_dotenv()
 
 logging.basicConfig(filename=Config.LOG_FILE, filemode="w", level=logging.INFO)
 
@@ -43,6 +46,7 @@ for task in session.query(TaskModel).all():
             logging.info(
                 f"Source {task_source.source.name}: nothing to download")
         downloaded = 0
+        time.sleep(1)
         wallposts = vk_api.wall.get(
             count=count, owner_id=task_source.source.source_id, extended=True, fields="all")
         for wallpost in wallposts["items"]:

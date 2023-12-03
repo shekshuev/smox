@@ -6,25 +6,22 @@ import axios from "axios";
 
 import store from "./store";
 
-import DashboardComponent from "src/components/dashboard/dashboard.vue";
-import SettingsComponent from "src/components/settings/settings.vue";
-import TaskComponent from "src/components/task/task.vue";
-import PostComponent from "src/components/post/post.vue";
-import NotFoundComponent from "src/components/notfound/notfound.vue";
-import AnalyticsComponent from "src/components/analytics/analytics.vue";
+import DashboardComponent from "src/components/dashboard.vue";
+import SettingsComponent from "src/components/settings.vue";
+import TaskComponent from "src/components/task.vue";
+import PostComponent from "src/components/post.vue";
+import NotFoundComponent from "src/components/notfound.vue";
+import AnalyticsComponent from "src/components/analytics.vue";
 
 import titleMixin from "src/mixins/title.js";
 
 axios.interceptors.request.use(
-    function(config) 
-    {
-      config.withCredentials = true;
-      return config;
+    function(config) {
+        config.withCredentials = true;
+        return config;
     },
-    function(error) 
-    {
-        if (error.response.status == 401)
-        {
+    function(error) {
+        if (error.response.status == 401) {
             localStorage.removeItem("accessToken");
             localStorage.removeItem("username");
             window.location.href = "/login";
@@ -32,23 +29,23 @@ axios.interceptors.request.use(
     }
 );
 
-axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true;
 
 const router = new VueRouter({
     mode: "history",
     routes: [
-        { path: "/", component: DashboardComponent }, 
+        { path: "/", component: DashboardComponent },
         { path: "/settings", component: SettingsComponent },
         { path: "/tasks", component: TaskComponent },
         { path: "/posts", component: PostComponent },
         { path: "/analytics", component: AnalyticsComponent },
-        { path: "*", component: NotFoundComponent }
-    ]
+        { path: "*", component: NotFoundComponent },
+    ],
 });
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 Vue.use(VueRouter);
-Vue.mixin(titleMixin)
+Vue.mixin(titleMixin);
 
 new Vue({
     title: "SMOX",
@@ -56,11 +53,11 @@ new Vue({
     vuetify,
     store,
     router,
-    render: h => h(Initial),
+    render: (h) => h(Initial),
     components: {
-        Initial 
+        Initial,
     },
     beforeCreate() {
-		this.$store.commit('initialiseStore');
-	}
-})
+        this.$store.commit("initialiseStore");
+    },
+});
