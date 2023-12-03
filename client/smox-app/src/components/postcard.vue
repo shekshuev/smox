@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined max-height="260" min-height="260" v-bind:style="border">
+    <v-card outlined max-height="300" min-height="300" v-bind:style="border">
         <v-card-title>
             <v-icon large left>mdi-vk</v-icon>
             <span class="title font-weight-light">Вконтакте</span>
@@ -11,6 +11,14 @@
             <span>{{
                 new Date(post.created_at).toLocaleDateString() + " " + new Date(post.created_at).toLocaleTimeString()
             }}</span>
+            <v-icon class="mr-1 ml-4">mdi-heart</v-icon>
+            <span class="subheading mr-2">{{ post.timestamps[post.timestamps.length - 1].likes_count }}</span>
+            <v-icon class="mr-1">mdi-share</v-icon>
+            <span class="subheading mr-2">{{ post.timestamps[post.timestamps.length - 1].reposts_count }}</span>
+            <v-icon class="mr-1">mdi-comment</v-icon>
+            <span class="subheading mr-2">{{ post.timestamps[post.timestamps.length - 1].comments_count }}</span>
+            <v-icon class="mr-1">mdi-eye</v-icon>
+            <span class="subheading">{{ post.timestamps[post.timestamps.length - 1].views_count }}</span>
         </v-card-text>
         <v-card-actions>
             <v-list-item class="grow">
@@ -21,22 +29,30 @@
                     <v-list-item-title>{{ post.source.name }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-content>
+                    <v-row>
+                        <v-btn
+                            text
+                            class="ml-3"
+                            @click="() => updateValue(1)"
+                            :outlined="post.fit_value === 1"
+                            :color="post.fit_value === 1 ? 'success' : 'secondary'"
+                            ><v-icon>mdi-emoticon-happy-outline</v-icon></v-btn
+                        >
+                        <v-btn
+                            text
+                            class="ml-3"
+                            @click="() => updateValue(0)"
+                            :outlined="post.fit_value === 0"
+                            :color="post.fit_value === 0 ? 'warning' : 'secondary'"
+                            ><v-icon>mdi-emoticon-neutral-outline</v-icon></v-btn
+                        >
+                    </v-row>
+                </v-list-item-content>
+                <v-list-item-content>
                     <v-btn target="_blank" text :href="'https://vk.com/wall' + post.owner_id + '_' + post.post_id"
                         >Ссылка</v-btn
                     >
                 </v-list-item-content>
-                <v-row align="center" justify="end">
-                    <v-icon class="mr-1">mdi-heart</v-icon>
-                    <span class="subheading mr-2">{{ post.timestamps[post.timestamps.length - 1].likes_count }}</span>
-                    <v-icon class="mr-1">mdi-share</v-icon>
-                    <span class="subheading mr-2">{{ post.timestamps[post.timestamps.length - 1].reposts_count }}</span>
-                    <v-icon class="mr-1">mdi-comment</v-icon>
-                    <span class="subheading mr-2">{{
-                        post.timestamps[post.timestamps.length - 1].comments_count
-                    }}</span>
-                    <v-icon class="mr-1">mdi-eye</v-icon>
-                    <span class="subheading">{{ post.timestamps[post.timestamps.length - 1].views_count }}</span>
-                </v-row>
             </v-list-item>
         </v-card-actions>
     </v-card>
@@ -53,7 +69,7 @@ export default Vue.component("postcard", {
         };
     },
     mounted: function() {
-        //console.log(this.post)
+        console.log(this.post);
     },
     computed: {
         border: function() {
@@ -66,6 +82,11 @@ export default Vue.component("postcard", {
         },
         color: function() {
             return this.post.value == -1 ? "secondary" : this.colors[this.post.value];
+        },
+    },
+    methods: {
+        updateValue(value) {
+            this.$emit("change", { ...this.post, fit_value: value });
         },
     },
 });

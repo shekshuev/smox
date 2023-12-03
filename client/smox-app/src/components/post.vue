@@ -30,6 +30,7 @@
                         v-bind:post="post"
                         class="mb-3"
                         infinite-wrapper
+                        @change="onPostChanged"
                     ></postcard>
                     <infinite-loading
                         :force-use-infinite-wrapper="true"
@@ -83,6 +84,7 @@ import { mapState } from "vuex";
 import { getPosts } from "src/api/post";
 import postCard from "./postcard.vue";
 import InfiniteLoading from "vue-infinite-loading";
+import { updatePost } from "src/api/post";
 
 //import { SET_OPTIONS, SET_START_DATE, SET_END_DATE } from "src/store/modules/post/mutation_types";
 
@@ -118,6 +120,10 @@ export default Vue.component("posts", {
         }),
     },
     methods: {
+        onPostChanged: async function(post) {
+            const result = await updatePost(post);
+            this.posts = this.posts.map((p) => (p.id === result.id ? result : p));
+        },
         applyFilter: function() {
             this.$refs.inf.stateChanger.reset();
             this.page = 0;
