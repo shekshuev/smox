@@ -23,7 +23,7 @@ def read_post():
         query = query.join(PostModel.targets).filter(
             TargetModel.id == target_id)
     return success({
-        "posts": [post.to_dict(rel=True) for post in query.offset(offset).limit(count)],
+        "posts": [post.to_dict(rel=True) for post in query.order_by(PostModel.fit_value.asc()).offset(offset).limit(count)],
         "count": query.count()
     })
 
